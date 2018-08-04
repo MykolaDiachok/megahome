@@ -78,7 +78,7 @@ void setup()
   hButton.NO(); // N.O. Normal Open
   // hButton.NC(); // N.C. Normal Closed
   //hButton.pullUp();
-  hButton.pullDn();
+  hButton.pullDn(); // - подтяжка пинов кнопок к GND
   hButton.duration_bounce(50);
   hButton.duration_click_Db(250);
   hButton.duration_inactivity_Up(5000);
@@ -87,6 +87,20 @@ void setup()
   hButton.button(hallSW0, hallSW1, bathroomSW0, wcSW0, kitchenSW0_0, kitchenSW0_1, kitchenSW1_0, balconySW0, livingRoomSW0, livingRoomSW1, bedRoomSW0_0, bedRoomSW0_1, bedRoomSW1_0, bedRoomSW1_1, bedRoomSW2_0, bedRoomSW2_1, childRoomSW0_0, childRoomSW0_1, childRoomSW1_0, childRoomSW1_1); // arduino pins connected to button
 
   //pinMode(inOutDoorSensor, INPUT); // подключение
+
+  pinMode(hallLight, OUTPUT);
+
+  pinMode(bathroomLight, OUTPUT);
+
+  pinMode(wcLight, OUTPUT);
+
+  pinMode(kitchenLight, OUTPUT);
+
+  pinMode(livingRoomLight, OUTPUT);
+
+  pinMode(bedRoomLight, OUTPUT);
+
+  pinMode(childRoomLight, OUTPUT);
 
   // put your setup code here, to run once:
 
@@ -98,28 +112,15 @@ void loop()
   // int val = digitalRead(Door_Sensor_Pin);
 
   hButton.read();
-  if (hButton.state_button(hallSW0) == 1)
-  {
-  }
-  if (hButton.state_inactivity_Up(hallSW0) == 1)
-  {
-  }
-  if (hButton.state_inactivity_Dn(hallSW0) == 1)
-  {
-  }
-  if (hButton.event_click_Up(hallSW0) == 1)
-  {
-  }
+
+#pragma region hall
+#pragma region hallSW0
   if (hButton.event_click_Dn(hallSW0) == 1)
   {
+    bhallLight != bhallLight;
+    digitalWrite(hallLight, bhallLight);
   }
   if (hButton.event_click_Db(hallSW0) == 1)
-  {
-  }
-  if (hButton.event_inactivity_Up(hallSW0) == 1)
-  {
-  }
-  if (hButton.event_inactivity_Dn(hallSW0) == 1)
   {
   }
   if (hButton.event_press_short(hallSW0) == 1)
@@ -128,35 +129,198 @@ void loop()
   if (hButton.event_press_long(hallSW0) == 1)
   {
   }
+#pragma endregion
 
-  if (hButton.state_button() == 1)
+#pragma region hallSW1
+  if (hButton.event_click_Dn(hallSW1) == 1)
   {
   }
-  if (hButton.state_inactivity_Up() == 1)
+  if (hButton.event_click_Db(hallSW1) == 1)
+  {
+    bhallLight != bhallLight;
+    digitalWrite(hallLight, bhallLight);
+  }
+  if (hButton.event_press_short(hallSW1) == 1)
   {
   }
-  if (hButton.state_inactivity_Dn() == 1)
+  if (hButton.event_press_long(hallSW1) == 1)
   {
   }
-  if (hButton.event_click_Up() == 1)
+#pragma endregion
+#pragma endregion
+
+#pragma region bathroom
+  if (hButton.event_click_Dn(bathroomSW0) == 1)
+  {
+    bbathroomLight != bbathroomLight;
+    digitalWrite(bathroomLight, bbathroomLight);
+  }
+  if (hButton.event_click_Db(bathroomSW0) == 1)
   {
   }
-  if (hButton.event_click_Dn() == 1)
+  if (hButton.event_press_short(bathroomSW0) == 1)
   {
   }
-  if (hButton.event_click_Db() == 1)
+  if (hButton.event_press_long(bathroomSW0) == 1)
   {
   }
-  if (hButton.event_inactivity_Up() == 1)
+#pragma endregion
+
+#pragma region WC
+  if (hButton.event_click_Dn(wcSW0) == 1)
+  {
+    bwcLight != bwcLight;
+    digitalWrite(wcLight, bwcLight);
+  }
+  if (hButton.event_click_Db(wcSW0) == 1)
   {
   }
-  if (hButton.event_inactivity_Dn() == 1)
+  if (hButton.event_press_short(wcSW0) == 1)
   {
   }
-  if (hButton.event_press_short() == 1)
+  if (hButton.event_press_long(wcSW0) == 1)
   {
   }
-  if (hButton.event_press_long() == 1)
+#pragma endregion
+
+#pragma region kitchen
+#pragma region kitchenSW0_0
+  if (hButton.event_click_Dn(kitchenSW0_0) == 1)
+  {
+    bkitchenLight != bkitchenLight;
+    digitalWrite(kitchenLight, bkitchenLight);
+  }
+  if (hButton.event_click_Db(kitchenSW0_0) == 1)
+  {
+  }
+  if (hButton.event_press_short(kitchenSW0_0) == 1)
+  {
+  }
+  if (hButton.event_press_long(kitchenSW0_0) == 1)
+  {
+  }
+#pragma endregion
+
+#pragma region kitchenSW0_1
+  if (hButton.event_click_Dn(kitchenSW0_1) == 1)
+  {
+  }
+  if (hButton.event_click_Db(kitchenSW0_1) == 1)
+  {
+    bkitchenLight != bkitchenLight;
+    digitalWrite(kitchenLight, bkitchenLight);
+  }
+  if (hButton.event_press_short(kitchenSW0_1) == 1)
+  {
+  }
+  if (hButton.event_press_long(kitchenSW0_1) == 1)
+  {
+  }
+#pragma endregion
+
+#pragma region kitchenSW0_1
+  if (hButton.event_click_Dn(kitchenSW0_1) == 1)
+  {
+  }
+  if (hButton.event_click_Db(kitchenSW0_1) == 1)
+  {
+    bkitchenLight != bkitchenLight;
+    digitalWrite(kitchenLight, bkitchenLight);
+  }
+  if (hButton.event_press_short(kitchenSW0_1) == 1)
+  {
+  }
+  if (hButton.event_press_long(kitchenSW0_1) == 1)
+  {
+  }
+#pragma endregion
+#pragma endregion
+
+#pragma region livingRoom
+#pragma region livingRoomSW0
+  if (hButton.event_click_Dn(livingRoomSW0) == 1)
+  {
+    blivingRoomLight != blivingRoomLight;
+    digitalWrite(livingRoomLight, blivingRoomLight);
+  }
+  if (hButton.event_click_Db(livingRoomSW0) == 1)
+  {
+  }
+  if (hButton.event_press_short(livingRoomSW0) == 1)
+  {
+  }
+  if (hButton.event_press_long(livingRoomSW0) == 1)
+  {
+  }
+#pragma endregion
+
+#pragma region livingRoomSW1
+  if (hButton.event_click_Dn(livingRoomSW1) == 1)
+  {
+    
+  }
+  if (hButton.event_click_Db(livingRoomSW1) == 1)
+  {
+    blivingRoomLight != blivingRoomLight;
+    digitalWrite(livingRoomLight, blivingRoomLight);
+  }
+  if (hButton.event_press_short(livingRoomSW1) == 1)
+  {
+  }
+  if (hButton.event_press_long(livingRoomSW1) == 1)
+  {
+  }
+#pragma endregion
+
+#pragma endregion
+
+#pragma region bedRoom
+#pragma region bedRoomSW0_0
+ if (hButton.event_click_Dn(bedRoomSW0_0) == 1)
+  {
+    bbedRoomLight != bbedRoomLight;
+    digitalWrite(bedRoomLight, bbedRoomLight);
+  }
+  if (hButton.event_click_Db(bedRoomSW0_0) == 1)
+  {
+  }
+  if (hButton.event_press_short(bedRoomSW0_0) == 1)
+  {
+  }
+  if (hButton.event_press_long(bedRoomSW0_0) == 1)
+  {
+  }
+#pragma endregion
+
+#pragma region bedRoomSW0_1
+  if (hButton.event_click_Dn(bedRoomSW0_1) == 1)
+  {
+    bhallLight != bhallLight;
+    digitalWrite(hallLight, bhallLight);
+  }
+  if (hButton.event_click_Db(bedRoomSW0_1) == 1)
+  {
+  }
+  if (hButton.event_press_short(bedRoomSW0_1) == 1)
+  {
+  }
+  if (hButton.event_press_long(bedRoomSW0_1) == 1)
+  {
+  }
+#pragma endregion
+
+#pragma endregion
+
+  if (hButton.event_click_Dn() == 1) // - событие нажатия                          кнопки
+  {
+  }
+  if (hButton.event_click_Db() == 1) // - событие двойного щелчка                  кнопки
+  {
+  }
+  if (hButton.event_press_short() == 1) // - событие короткого нажатия                кнопки
+  {
+  }
+  if (hButton.event_press_long() == 1) // - событие длинного  нажатия                кнопки
   {
   }
 }
