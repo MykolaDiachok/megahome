@@ -1,0 +1,4 @@
+{
+    "sketch": "megahome.ino",
+    "board": "arduino:avr:megaADK"
+}
