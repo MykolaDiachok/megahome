@@ -1,6 +1,6 @@
 #include <Button.h>
 
-#define hallSW0 1 // выключатель в холе кнопка 0
+#define hallSW0 14 // выключатель в холе кнопка 0
 
 #define hallSW1 2   // выключатель в холе кнопка 1
 #define hallLight 3 // коридор свет
@@ -24,10 +24,10 @@ int iwcFan = 0;
 #define wcBrace 11 // туалет бра
 bool bwcBrace = false;
 
-#define kitchenSW0_0 12 // кухня выключатель кнопка 0
-#define kitchenSW0_1 13 // кухня выключатель кнопка 1
-#define kitchenSW1_0 14 // кухня выключатель кнопка возле поверхности кнопка 0
-#define kitchenLight 15
+#define kitchenSW0_0 15 // кухня выключатель кнопка 0
+#define kitchenSW0_1 16 // кухня выключатель кнопка 1
+#define kitchenSW1_0 17 // кухня выключатель кнопка возле поверхности кнопка 0
+#define kitchenLight 18
 bool bkitchenLight = false;
 #define kitchenLight1 16
 bool bkitchenLight1 = false;
@@ -75,6 +75,7 @@ Button hButton;
 
 void setup()
 {
+   Serial.begin(9600);
   hButton.NO(); // N.O. Normal Open
   // hButton.NC(); // N.C. Normal Closed
   //hButton.pullUp();
@@ -89,13 +90,21 @@ void setup()
   //pinMode(inOutDoorSensor, INPUT); // подключение
 
   pinMode(hallLight, OUTPUT);
-
+  bhallLight = HIGH;
+  digitalWrite(hallLight,bhallLight);
+  
   pinMode(bathroomLight, OUTPUT);
-
+  bbathroomLight = HIGH;
+  digitalWrite(bathroomLight,bbathroomLight);
+  
+  pinMode(bathroomFan, OUTPUT);
+  //digitalWrite(bathroomLight, HIGH);
   pinMode(wcLight, OUTPUT);
 
+  //digitalWrite(wcLight, LOW);
   pinMode(kitchenLight, OUTPUT);
-
+  bkitchenLight = HIGH;
+  digitalWrite(kitchenLight,bkitchenLight);
   pinMode(livingRoomLight, OUTPUT);
 
   pinMode(bedRoomLight, OUTPUT);
@@ -104,7 +113,7 @@ void setup()
 
   // put your setup code here, to run once:
 
-  Serial.begin(9600);
+ 
 }
 
 void loop()
@@ -112,125 +121,146 @@ void loop()
   // int val = digitalRead(Door_Sensor_Pin);
 
   hButton.read();
-
+//Serial.println("test");
 #pragma region hall
 #pragma region hallSW0
-  if (hButton.event_click_Dn(hallSW0) == 1)
+  if (hButton.event_click_Dn(0) == 1)
   {
-    bhallLight != bhallLight;
+     Serial.println("hallSW0");
+    bhallLight = !bhallLight;
     digitalWrite(hallLight, bhallLight);
   }
-  if (hButton.event_click_Db(hallSW0) == 1)
+  if (hButton.event_click_Db(0) == 1)
   {
   }
-  if (hButton.event_press_short(hallSW0) == 1)
+  if (hButton.event_press_short(0) == 1)
   {
   }
-  if (hButton.event_press_long(hallSW0) == 1)
+  if (hButton.event_press_long(0) == 1)
   {
   }
 #pragma endregion
 
 #pragma region hallSW1
-  if (hButton.event_click_Dn(hallSW1) == 1)
+  if (hButton.event_click_Dn(1) == 1)
   {
+    Serial.println("hallSW1");
+    //bhallLight = !bhallLight;
+    bhallLight = HIGH;
+    bbathroomLight = HIGH;
+    bwcLight = false;
+    bkitchenLight = HIGH;
+    digitalWrite(hallLight, bhallLight);
+    digitalWrite(bathroomLight, bbathroomLight);
+    digitalWrite(wcLight, bwcLight);
+    digitalWrite(kitchenLight, bkitchenLight);
+    digitalWrite(bathroomFan, bbathroomLight);
+    bchildRoomLight = LOW;
+    digitalWrite(childRoomLight, bchildRoomLight);
   }
-  if (hButton.event_click_Db(hallSW1) == 1)
+  if (hButton.event_click_Db(1) == 1)
   {
     bhallLight != bhallLight;
     digitalWrite(hallLight, bhallLight);
   }
-  if (hButton.event_press_short(hallSW1) == 1)
+  if (hButton.event_press_short(1) == 1)
   {
   }
-  if (hButton.event_press_long(hallSW1) == 1)
+  if (hButton.event_press_long(1) == 1)
   {
   }
 #pragma endregion
 #pragma endregion
 
 #pragma region bathroom
-  if (hButton.event_click_Dn(bathroomSW0) == 1)
+  if (hButton.event_click_Dn(2) == 1)
   {
-    bbathroomLight != bbathroomLight;
+    Serial.println("bathroomSW0");
+    bbathroomLight = !bbathroomLight;
+    Serial.println(bbathroomLight);
     digitalWrite(bathroomLight, bbathroomLight);
+    digitalWrite(bathroomFan, bbathroomLight);
+    
   }
-  if (hButton.event_click_Db(bathroomSW0) == 1)
+  if (hButton.event_click_Db(2) == 1)
   {
   }
-  if (hButton.event_press_short(bathroomSW0) == 1)
+  if (hButton.event_press_short(2) == 1)
   {
   }
-  if (hButton.event_press_long(bathroomSW0) == 1)
+  if (hButton.event_press_long(2) == 1)
   {
   }
 #pragma endregion
 
 #pragma region WC
-  if (hButton.event_click_Dn(wcSW0) == 1)
+  if (hButton.event_click_Dn(3) == 1)
   {
-    bwcLight != bwcLight;
+    Serial.println("WCSW0");
+    bwcLight = !bwcLight;
+    Serial.println(bwcLight);
     digitalWrite(wcLight, bwcLight);
   }
-  if (hButton.event_click_Db(wcSW0) == 1)
+  if (hButton.event_click_Db(3) == 1)
   {
   }
-  if (hButton.event_press_short(wcSW0) == 1)
+  if (hButton.event_press_short(3) == 1)
   {
   }
-  if (hButton.event_press_long(wcSW0) == 1)
+  if (hButton.event_press_long(3) == 1)
   {
   }
 #pragma endregion
 
 #pragma region kitchen
 #pragma region kitchenSW0_0
-  if (hButton.event_click_Dn(kitchenSW0_0) == 1)
+  if (hButton.event_click_Dn(4) == 1)
   {
-    bkitchenLight != bkitchenLight;
+    Serial.println("kitchenLight");
+    bkitchenLight = !bkitchenLight;
     digitalWrite(kitchenLight, bkitchenLight);
   }
-  if (hButton.event_click_Db(kitchenSW0_0) == 1)
+  if (hButton.event_click_Db(4) == 1)
   {
   }
-  if (hButton.event_press_short(kitchenSW0_0) == 1)
+  if (hButton.event_press_short(4) == 1)
   {
   }
-  if (hButton.event_press_long(kitchenSW0_0) == 1)
+  if (hButton.event_press_long(4) == 1)
   {
   }
 #pragma endregion
 
 #pragma region kitchenSW0_1
-  if (hButton.event_click_Dn(kitchenSW0_1) == 1)
+  if (hButton.event_click_Dn(5) == 1)
   {
   }
-  if (hButton.event_click_Db(kitchenSW0_1) == 1)
+  if (hButton.event_click_Db(5) == 1)
   {
     bkitchenLight != bkitchenLight;
     digitalWrite(kitchenLight, bkitchenLight);
   }
-  if (hButton.event_press_short(kitchenSW0_1) == 1)
+  if (hButton.event_press_short(5) == 1)
   {
   }
-  if (hButton.event_press_long(kitchenSW0_1) == 1)
+  if (hButton.event_press_long(5) == 1)
   {
   }
 #pragma endregion
 
 #pragma region kitchenSW0_1
-  if (hButton.event_click_Dn(kitchenSW0_1) == 1)
+  if (hButton.event_click_Dn(6) == 1)
   {
   }
-  if (hButton.event_click_Db(kitchenSW0_1) == 1)
+  if (hButton.event_click_Db(6) == 1)
   {
     bkitchenLight != bkitchenLight;
     digitalWrite(kitchenLight, bkitchenLight);
   }
-  if (hButton.event_press_short(kitchenSW0_1) == 1)
+  if (hButton.event_press_short(6) == 1)
   {
   }
-  if (hButton.event_press_long(kitchenSW0_1) == 1)
+  if (hButton.event_press_long(6) == 1)
   {
   }
 #pragma endregion
@@ -238,36 +268,36 @@ void loop()
 
 #pragma region livingRoom
 #pragma region livingRoomSW0
-  if (hButton.event_click_Dn(livingRoomSW0) == 1)
+  if (hButton.event_click_Dn(7) == 1)
   {
     blivingRoomLight != blivingRoomLight;
     digitalWrite(livingRoomLight, blivingRoomLight);
   }
-  if (hButton.event_click_Db(livingRoomSW0) == 1)
+  if (hButton.event_click_Db(7) == 1)
   {
   }
-  if (hButton.event_press_short(livingRoomSW0) == 1)
+  if (hButton.event_press_short(7) == 1)
   {
   }
-  if (hButton.event_press_long(livingRoomSW0) == 1)
+  if (hButton.event_press_long(7) == 1)
   {
   }
 #pragma endregion
 
 #pragma region livingRoomSW1
-  if (hButton.event_click_Dn(livingRoomSW1) == 1)
+  if (hButton.event_click_Dn(8) == 1)
   {
     
   }
-  if (hButton.event_click_Db(livingRoomSW1) == 1)
+  if (hButton.event_click_Db(8) == 1)
   {
     blivingRoomLight != blivingRoomLight;
     digitalWrite(livingRoomLight, blivingRoomLight);
   }
-  if (hButton.event_press_short(livingRoomSW1) == 1)
+  if (hButton.event_press_short(8) == 1)
   {
   }
-  if (hButton.event_press_long(livingRoomSW1) == 1)
+  if (hButton.event_press_long(8) == 1)
   {
   }
 #pragma endregion
@@ -276,40 +306,82 @@ void loop()
 
 #pragma region bedRoom
 #pragma region bedRoomSW0_0
- if (hButton.event_click_Dn(bedRoomSW0_0) == 1)
+ if (hButton.event_click_Dn(9) == 1)
   {
     bbedRoomLight != bbedRoomLight;
     digitalWrite(bedRoomLight, bbedRoomLight);
   }
-  if (hButton.event_click_Db(bedRoomSW0_0) == 1)
+  if (hButton.event_click_Db(9) == 1)
   {
   }
-  if (hButton.event_press_short(bedRoomSW0_0) == 1)
+  if (hButton.event_press_short(9) == 1)
   {
   }
-  if (hButton.event_press_long(bedRoomSW0_0) == 1)
+  if (hButton.event_press_long(9) == 1)
   {
   }
 #pragma endregion
 
 #pragma region bedRoomSW0_1
-  if (hButton.event_click_Dn(bedRoomSW0_1) == 1)
+  if (hButton.event_click_Dn(10) == 1)
   {
     bhallLight != bhallLight;
     digitalWrite(hallLight, bhallLight);
   }
-  if (hButton.event_click_Db(bedRoomSW0_1) == 1)
+  if (hButton.event_click_Db(10) == 1)
   {
   }
-  if (hButton.event_press_short(bedRoomSW0_1) == 1)
+  if (hButton.event_press_short(10) == 1)
   {
   }
-  if (hButton.event_press_long(bedRoomSW0_1) == 1)
+  if (hButton.event_press_long(10) == 1)
   {
   }
 #pragma endregion
 
 #pragma endregion
+
+#pragma region childRoom
+#pragma region childRoomSW0_0
+ if (hButton.event_click_Dn(16) == 1)
+  {
+    Serial.println("childRoomSW0_0");
+    bchildRoomLight = !bchildRoomLight;
+    digitalWrite(childRoomLight, bchildRoomLight);
+  }
+  if (hButton.event_click_Db(16) == 1)
+  {
+  }
+  if (hButton.event_press_short(16) == 1)
+  {
+  }
+  if (hButton.event_press_long(16) == 1)
+  {
+  }
+#pragma endregion
+
+#pragma region childRoomSW0_1
+  if (hButton.event_click_Dn(17) == 1)
+  {
+    Serial.println("childRoomSW0_1");
+    //bchildRoomLight = !bchildRoomLight;
+    //digitalWrite(childRoomLight, bchildRoomLight);
+  }
+  if (hButton.event_click_Db(17) == 1)
+  {
+  }
+  if (hButton.event_press_short(17) == 1)
+  {
+  }
+  if (hButton.event_press_long(17) == 1)
+  {
+  }
+#pragma endregion
+
+#pragma endregion
+
+
+
 
   if (hButton.event_click_Dn() == 1) // - событие нажатия                          кнопки
   {
