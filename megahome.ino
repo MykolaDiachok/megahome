@@ -69,7 +69,7 @@ bool bchildRoomLight = false;
 #define childRoomBrace 39
 bool bchildRoomBrace = false;
 
-#define inOutDoorSensor  12 // TODO не забуть установить сенсор дверей
+#define inOutDoorSensor  12 
 
 Button hButton;
 
