@@ -269,7 +269,6 @@ void loop()
     HallTimeOff = millis();
     Serial.println("hallSW1");
     allOFF(false);
-
   }
   if (hButton.event_click_Db(1) == 1)
   {
@@ -357,10 +356,30 @@ void loop()
     Serial.println(bwcLight);
     digitalWrite(wcLight, !bwcLight);
     digitalWrite(wcBrace, !bwcLight);
-    digitalWrite(wcFan, !bwcLight);
+    //digitalWrite(wcFan, !bwcLight);
+    if (wcLight == ON)
+    {
+      if (wcTimer != 0)
+      {
+        myTimer.stop(wcTimer);
+        wcTimer = 0;
+      }
+      Serial.println("wcFan timer=ON");
+      bathroomTimer = myTimer.after(5 * myMINUTE, &WCFanOFF);
+    }
+    else
+    {
+      digitalWrite(wcFan, ON);
+      Serial.println("wcFan=ON");
+    }
   }
   if (hButton.event_click_Db(3) == 1)
   {
+    Serial.println("WCSW0_db");
+    bwcLight = digitalRead(wcLight);
+    Serial.println(bwcLight);
+    digitalWrite(wcLight, !bwcLight);
+    digitalWrite(wcBrace, !bwcLight);
   }
   if (hButton.event_press_short(3) == 1)
   {
@@ -513,7 +532,7 @@ void loop()
   if (hButton.event_click_Db(10) == 1)
   {
     bbedRoomLight = digitalRead(bedRoomLight);
-    digitalWrite(bedRoomLight, !bbedRoomLight);    
+    digitalWrite(bedRoomLight, !bbedRoomLight);
   }
   if (hButton.event_press_short(10) == 1)
   {
