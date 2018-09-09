@@ -169,6 +169,11 @@ void setup()
   // put your setup code here, to run once:
 }
 
+void BathRoomFanOFF()
+{
+  digitalWrite(bathroomFan, OFF);
+}
+
 void allOFF(bool withHall = false)
 {
   Serial.print("allOFF");
@@ -282,20 +287,22 @@ void loop()
     Serial.println(bbathroomLight);
     digitalWrite(bathroomLight, !bbathroomLight);
     //digitalWrite(bathroomFan, !bbathroomLight);
-    if (bbathroomLight == OFF)
+    if (!bbathroomLight == OFF)
     {
       if (bathroomTimer != 0)
       {
         myTimer.stop(bathroomTimer);
         bathroomTimer = 0;
       }
-      bathroomTimer = myTimer.oscillate(bathroomFan, 5 * SECS_PER_MIN, !bbathroomLight);
+      //bathroomTimer = myTimer.oscillate(bathroomFan, 5 * SECS_PER_MIN, !bbathroomLight);
+      bathroomTimer = myTimer.after(5000,&BathRoomFanOFF);
     }
-    else
-    {
-      myTimer.stop(bathroomTimer);
-      bathroomTimer = 0;
-    }
+     else
+     {
+       //myTimer.stop(bathroomTimer);
+       //bathroomTimer = 0;
+       digitalWrite(bathroomFan, ON);
+     }
   }
   if (hButton.event_click_Db(2) == 1) //only lights
   {
@@ -318,7 +325,7 @@ void loop()
         myTimer.stop(bathroomTimer);
         bathroomTimer = 0;
       }
-      bathroomTimer = myTimer.oscillate(bathroomFan, 15 * SECS_PER_MIN, OFF);
+      bathroomTimer = myTimer.after(5000,&BathRoomFanOFF);
     }
     else // Если fan - включен, то выключаем
     {
