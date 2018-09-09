@@ -1,4 +1,6 @@
 {
     "sketch": "megahome.ino",
-    "board": "arduino:avr:leonardoeth"
+    "board": "arduino:avr:mega",
+    "port": "/dev/cu.usbmodem1421",
+    "configuration": "cpu=atmega2560"
 }

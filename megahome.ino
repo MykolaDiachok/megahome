@@ -29,54 +29,57 @@ bool bwcBrace = false;
 #define kitchenSW1_0 17 // кухня выключатель кнопка возле поверхности кнопка 0
 #define kitchenLight 18
 bool bkitchenLight = false;
-#define kitchenLight1 16
+#define kitchenLight1 19
 bool bkitchenLight1 = false;
-#define kitchenLight2 17
+#define kitchenLight2 20
 bool bkitchenLight2 = false;
-#define kitchenLightDots 18
+#define kitchenLightDots 21
 bool bkitchenLightDots = false;
 
-#define balconySW0 19
-#define balconyLight 20
+#define balconySW0 22
+#define balconyLight 23
 bool bbalconyLight = false;
 
-#define livingRoomSW0 21
-#define livingRoomSW1 22
-#define livingRoomLight 23
+#define livingRoomSW0 24
+#define livingRoomSW1 25
+#define livingRoomLight 26
 bool blivingRoomLight = false;
-#define livingRoomBrace 24
+#define livingRoomBrace 27
 bool blivingRoomBrace = false;
 
-#define bedRoomSW0_0 25
-#define bedRoomSW0_1 26
-#define bedRoomSW1_0 27
-#define bedRoomSW1_1 28
-#define bedRoomSW2_0 29
-#define bedRoomSW2_1 30
-#define bedRoomLight 31
+#define bedRoomSW0_0 29
+#define bedRoomSW0_1 28
+#define bedRoomSW1_0 30
+#define bedRoomSW1_1 31
+#define bedRoomSW2_0 32
+#define bedRoomSW2_1 33
+#define bedRoomLight 34
 bool bbedRoomLight = false;
-#define bedRoomBrace0 32
+#define bedRoomBrace0 35
 bool bbedRoomBrace0 = false;
-#define bedRoomBrace1 33
+#define bedRoomBrace1 36
 bool bbedRoomBrace1 = false;
 
-#define childRoomSW0_0 34
-#define childRoomSW0_1 35
-#define childRoomSW1_0 36
-#define childRoomSW1_1 37
-#define childRoomLight 38
+#define childRoomSW0_0 37
+#define childRoomSW0_1 38
+#define childRoomSW1_0 39
+#define childRoomSW1_1 40
+#define childRoomLight 41
 bool bchildRoomLight = false;
-#define childRoomBrace 39
+#define childRoomBrace 42
 bool bchildRoomBrace = false;
 
 #define inOutDoorSensor  12 
 
 Button hButton;
 
-int HallTimeOff=0;
+unsigned long HallTimeOff=0;
 
 #define ON LOW
 #define OFF HIGH
+
+#define ON2 HIGH
+#define OFF2 LOW
 
 void setup()
 {
@@ -94,9 +97,11 @@ void setup()
   hButton.button(hallSW0, hallSW1, bathroomSW0, wcSW0, kitchenSW0_0, kitchenSW0_1, kitchenSW1_0, balconySW0, livingRoomSW0, livingRoomSW1, bedRoomSW0_0, bedRoomSW0_1, bedRoomSW1_0, bedRoomSW1_1, bedRoomSW2_0, bedRoomSW2_1, childRoomSW0_0, childRoomSW0_1, childRoomSW1_0, childRoomSW1_1); // arduino pins connected to button
 
   //pinMode(inOutDoorSensor, INPUT); // подключение
-
+  digitalWrite(hallLight, LOW);
   pinMode(hallLight, OUTPUT);  
   digitalWrite(hallLight, OFF);
+  
+
   
   pinMode(bathroomLight, OUTPUT);  
   pinMode(bathroomFan, OUTPUT);
@@ -112,14 +117,43 @@ void setup()
   pinMode(kitchenLight, OUTPUT);  
   digitalWrite(kitchenLight,OFF);
 
+  pinMode(kitchenLight1, OUTPUT);  
+  digitalWrite(kitchenLight1,OFF);
+
+  pinMode(kitchenLight2, OUTPUT);  
+  digitalWrite(kitchenLight2,OFF);
+
+  pinMode(kitchenLightDots, OUTPUT);  
+  digitalWrite(kitchenLightDots,OFF);
+
+//balconyLight
+  pinMode(balconyLight, OUTPUT);  
+  digitalWrite(balconyLight,OFF);
+  
+  
   pinMode(livingRoomLight, OUTPUT);
-  digitalWrite(livingRoomLight,OFF);
+  digitalWrite(livingRoomLight,OFF2);
+
+//livingRoomBrace
+  
+  pinMode(livingRoomBrace, OUTPUT);
+  digitalWrite(livingRoomBrace,OFF2);
+
 
   pinMode(bedRoomLight, OUTPUT);
-  digitalWrite(bedRoomLight,OFF);
+  digitalWrite(bedRoomLight,OFF2);
 
+  pinMode(bedRoomBrace0, OUTPUT);
+  digitalWrite(bedRoomBrace0,OFF2);
+
+  pinMode(bedRoomBrace1, OUTPUT);
+  digitalWrite(bedRoomBrace1,OFF2);
+  
   pinMode(childRoomLight, OUTPUT);
-  digitalWrite(childRoomLight,OFF);
+  digitalWrite(childRoomLight,OFF2);
+
+  pinMode(childRoomBrace, OUTPUT);
+  digitalWrite(childRoomBrace,OFF2);
   // put your setup code here, to run once:
 
  
@@ -127,8 +161,10 @@ void setup()
 
 void allOFF(bool withHall=false)
 {
+    Serial.print("allOFF");
     if (withHall)
     {
+      Serial.println(" with hall");
       digitalWrite(hallLight, OFF);
     }
     digitalWrite(bathroomLight, OFF);
@@ -136,18 +172,44 @@ void allOFF(bool withHall=false)
     digitalWrite(wcLight, OFF);
     digitalWrite(wcFan, OFF);
     digitalWrite(kitchenLight, OFF);
-    digitalWrite(childRoomLight, OFF);
+    digitalWrite(kitchenLight1, OFF);
+    digitalWrite(kitchenLight2, OFF);
+    digitalWrite(kitchenLightDots, OFF);
+    
+    digitalWrite(balconyLight, OFF);
+
+    digitalWrite(livingRoomLight,OFF2);
+
+    digitalWrite(bedRoomLight,OFF2);
+    digitalWrite(bedRoomBrace0,OFF2);
+    digitalWrite(bedRoomBrace1,OFF2);
+    
+    digitalWrite(childRoomLight, OFF2);
+    digitalWrite(childRoomBrace,OFF2);
+    
+    Serial.println("");
 }
+
+bool OpenInOutDoorSensor =false;
 
 void loop()
 {
   bool val = digitalRead(inOutDoorSensor);
-  if ((!val)&&(digitalRead(hallLight)==OFF))
+  if ((!OpenInOutDoorSensor)&&(!val)&&(digitalRead(hallLight)==OFF))
   {
     digitalWrite(hallLight, ON);
+    Serial.print("in out door sensor=");
+    Serial.println("ON");
+    OpenInOutDoorSensor = true;
+    HallTimeOff = millis();
   }  
-  if ((digitalRead(hallLight)==ON)&&(HallTimeOff>0)&&(millis()-HallTimeOff>0))
+  else
   {
+    OpenInOutDoorSensor =false;
+  }
+  if ((digitalRead(hallLight)==ON)&&(HallTimeOff>0)&&(millis()-HallTimeOff>=60000))
+  {
+    Serial.println("all off timer");
     HallTimeOff = 0;
     allOFF(true);
 
@@ -178,7 +240,7 @@ void loop()
 #pragma region hallSW1
   if (hButton.event_click_Dn(1) == 1)
   {
-    HallTimeOff = millis()+60000;
+    HallTimeOff = millis();
     Serial.println("hallSW1");
     allOFF(false);
     //digitalWrite(hallLight, OFF);
@@ -247,7 +309,7 @@ void loop()
 #pragma region kitchenSW0_0
   if (hButton.event_click_Dn(4) == 1)
   {
-    Serial.println("kitchenLight");
+    Serial.println("kitchenSW0_0");
     bkitchenLight = digitalRead(kitchenLight);
     digitalWrite(kitchenLight, !bkitchenLight);
   }
@@ -265,11 +327,14 @@ void loop()
 #pragma region kitchenSW0_1
   if (hButton.event_click_Dn(5) == 1)
   {
+    Serial.println("kitchenSW0_1");
+    
+    bkitchenLightDots = digitalRead(kitchenLightDots);
+    digitalWrite(kitchenLightDots, !bkitchenLightDots);
   }
   if (hButton.event_click_Db(5) == 1)
   {
-    bkitchenLight = digitalRead(kitchenLight);
-    digitalWrite(kitchenLight, !bkitchenLight);
+    
   }
   if (hButton.event_press_short(5) == 1)
   {
@@ -279,14 +344,18 @@ void loop()
   }
 #pragma endregion
 
-#pragma region kitchenSW0_1
+#pragma region kitchenSW1_0
   if (hButton.event_click_Dn(6) == 1)
   {
+    Serial.println("kitchenSW1_0");
+    bkitchenLight1 = digitalRead(kitchenLight1);
+    digitalWrite(kitchenLight1, !bkitchenLight1);
+    digitalWrite(kitchenLight2, !bkitchenLight1);
+  
   }
   if (hButton.event_click_Db(6) == 1)
   {
-    bkitchenLight = digitalRead(kitchenLight);
-    digitalWrite(kitchenLight, !bkitchenLight);
+    
   }
   if (hButton.event_press_short(6) == 1)
   {
@@ -297,15 +366,17 @@ void loop()
 #pragma endregion
 #pragma endregion
 
-#pragma region livingRoom
-#pragma region livingRoomSW0
+#pragma region balconySW0
   if (hButton.event_click_Dn(7) == 1)
   {
-    blivingRoomLight = digitalRead(livingRoomLight);
-    digitalWrite(livingRoomLight, !blivingRoomLight);
+    Serial.println("balconySW0");
+    
+    bbalconyLight = digitalRead(balconyLight);
+    digitalWrite(balconyLight, !bbalconyLight);
   }
   if (hButton.event_click_Db(7) == 1)
   {
+    
   }
   if (hButton.event_press_short(7) == 1)
   {
@@ -315,15 +386,16 @@ void loop()
   }
 #pragma endregion
 
-#pragma region livingRoomSW1
+#pragma region livingRoom
+#pragma region livingRoomSW0
   if (hButton.event_click_Dn(8) == 1)
   {
-    
+    Serial.println("livingRoomSW0");
+    blivingRoomLight = digitalRead(livingRoomLight);
+    digitalWrite(livingRoomLight, !blivingRoomLight);
   }
   if (hButton.event_click_Db(8) == 1)
   {
-    blivingRoomLight = digitalRead(livingRoomLight);
-    digitalWrite(livingRoomLight, !blivingRoomLight);
   }
   if (hButton.event_press_short(8) == 1)
   {
@@ -333,17 +405,15 @@ void loop()
   }
 #pragma endregion
 
-#pragma endregion
-
-#pragma region bedRoom
-#pragma region bedRoomSW0_0
- if (hButton.event_click_Dn(9) == 1)
+#pragma region livingRoomSW1
+  if (hButton.event_click_Dn(9) == 1)
   {
-    bbedRoomLight = digitalRead(bedRoomLight);
-    digitalWrite(bedRoomLight, !bbedRoomLight);
+    Serial.println("livingRoomSW1");
   }
   if (hButton.event_click_Db(9) == 1)
   {
+    blivingRoomBrace = digitalRead(livingRoomBrace);
+    digitalWrite(livingRoomBrace, !blivingRoomBrace);
   }
   if (hButton.event_press_short(9) == 1)
   {
@@ -353,11 +423,15 @@ void loop()
   }
 #pragma endregion
 
-#pragma region bedRoomSW0_1
-  if (hButton.event_click_Dn(10) == 1)
+#pragma endregion
+
+#pragma region bedRoom
+#pragma region bedRoomSW0_0
+ if (hButton.event_click_Dn(10) == 1)
   {
-    bhallLight = digitalRead(hallLight);;
-    digitalWrite(hallLight, !bhallLight);
+    Serial.println("bedRoomSW0_0");
+    bbedRoomLight = digitalRead(bedRoomLight);
+    digitalWrite(bedRoomLight, !bbedRoomLight);
   }
   if (hButton.event_click_Db(10) == 1)
   {
@@ -366,6 +440,93 @@ void loop()
   {
   }
   if (hButton.event_press_long(10) == 1)
+  {
+  }
+#pragma endregion
+
+#pragma region bedRoomSW0_1
+  if (hButton.event_click_Dn(11) == 1)
+  {
+    Serial.println("bedRoomSW0_1");
+    bhallLight = digitalRead(hallLight);
+    digitalWrite(hallLight, !bhallLight);
+  }
+  if (hButton.event_click_Db(11) == 1)
+  {
+  }
+  if (hButton.event_press_short(11) == 1)
+  {
+  }
+  if (hButton.event_press_long(11) == 1)
+  {
+  }
+#pragma endregion
+
+#pragma region bedRoomSW1_0
+  if (hButton.event_click_Dn(12) == 1)
+  {
+    Serial.println("bedRoomSW1_0");
+    bbedRoomBrace0 = digitalRead(bedRoomBrace0);
+    digitalWrite(bedRoomBrace0, !bbedRoomBrace0);
+  }
+  if (hButton.event_click_Db(12) == 1)
+  {
+  }
+  if (hButton.event_press_short(12) == 1)
+  {
+  }
+  if (hButton.event_press_long(12) == 1)
+  {
+  }
+#pragma endregion
+#pragma region bedRoomSW1_1
+  if (hButton.event_click_Dn(13) == 1)
+  {
+    Serial.println("bedRoomSW1_1");
+    bbedRoomBrace0 = digitalRead(bedRoomBrace0);
+    digitalWrite(bedRoomBrace0, !bbedRoomBrace0);
+  }
+  if (hButton.event_click_Db(13) == 1)
+  {
+  }
+  if (hButton.event_press_short(13) == 1)
+  {
+  }
+  if (hButton.event_press_long(13) == 1)
+  {
+  }
+#pragma endregion
+#pragma region bedRoomSW2_1
+  if (hButton.event_click_Dn(14) == 1)
+  {
+    Serial.println("bedRoomSW2_1");
+     bbedRoomBrace1 = digitalRead(bedRoomBrace1);
+    digitalWrite(bedRoomBrace1, !bbedRoomBrace1);
+  }
+  if (hButton.event_click_Db(14) == 1)
+  {
+  }
+  if (hButton.event_press_short(14) == 1)
+  {
+  }
+  if (hButton.event_press_long(14) == 1)
+  {
+  }
+#pragma endregion
+#pragma region bedRoomSW2_2
+  if (hButton.event_click_Dn(15) == 1)
+  {
+    Serial.println("bedRoomSW2_2");
+    bbedRoomBrace1 = digitalRead(bedRoomBrace1);
+    digitalWrite(bedRoomBrace1, !bbedRoomBrace1);
+  }
+  if (hButton.event_click_Db(15) == 1)
+  {
+  }
+  if (hButton.event_press_short(15) == 1)
+  {
+  }
+  if (hButton.event_press_long(15) == 1)
   {
   }
 #pragma endregion
@@ -408,6 +569,42 @@ void loop()
   {
   }
 #pragma endregion
+
+#pragma region childRoomSW1_0
+  if (hButton.event_click_Dn(18) == 1)
+  {
+    Serial.println("childRoomSW1_0");
+    bchildRoomBrace = !digitalRead(childRoomBrace);
+    digitalWrite(childRoomBrace, bchildRoomBrace);
+  }
+  if (hButton.event_click_Db(18) == 1)
+  {
+  }
+  if (hButton.event_press_short(18) == 1)
+  {
+  }
+  if (hButton.event_press_long(18) == 1)
+  {
+  }
+#pragma endregion
+#pragma region childRoomSW1_1
+  if (hButton.event_click_Dn(19) == 1)
+  {
+    Serial.println("childRoomSW1_1");
+    //bchildRoomLight = !bchildRoomLight;
+    //digitalWrite(childRoomLight, bchildRoomLight);
+  }
+  if (hButton.event_click_Db(19) == 1)
+  {
+  }
+  if (hButton.event_press_short(19) == 1)
+  {
+  }
+  if (hButton.event_press_long(19) == 1)
+  {
+  }
+#pragma endregion
+
 
 #pragma endregion
 
