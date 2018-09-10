@@ -172,6 +172,9 @@ void setup()
   // put your setup code here, to run once:
 }
 
+bool OpenInOutDoorSensor = false;
+bool ballOFF = false;
+
 void WCFanOFF()
 {
   Serial.println("WCFan timer=OFF");
@@ -190,7 +193,7 @@ void BathRoomFanOFF()
 
 void HallLightOFF()
 {
-  Serial.println("hallLight timer=OFF");
+  Serial.println("hallLight timer end=OFF");
   digitalWrite(hallLight, OFF);
   myTimer.stop(hallTimer);
   hallTimer = 0;
@@ -242,9 +245,10 @@ void allLightsOFF()
     allTimer = 0;
     allTimer = myTimer.after(2 * myMINUTE, &allLightsOFF);
   }
+  ballOFF=false;
 }
 
-bool OpenInOutDoorSensor = false;
+
 
 void loop()
 {
@@ -276,8 +280,14 @@ void loop()
   {
     Serial.println("OutDoor event_click_Dn");
     OpenInOutDoorSensor = false;
-    if (bhallLight == OFF)
+    if ((bhallLight == OFF)&&(!ballOFF))
     {
+      Serial.println("start timer hall light off");
+      hallTimer = myTimer.after(2 * myMINUTE, &HallLightOFF);
+    }
+    else
+    {
+      hallTimer = myTimer.after(2 * myMINUTE, &allLightsOFF);
     }
   }
   if (hButton.event_click_Up(20) == 1)
@@ -285,6 +295,8 @@ void loop()
     Serial.println("OutDoor event_click_Up");
     digitalWrite(hallLight, ON);
     OpenInOutDoorSensor = true;
+    myTimer.stop(hallTimer);
+    hallTimer = 0;
   }
 #pragma endregion
 
@@ -310,7 +322,8 @@ void loop()
 #pragma region hallSW1
   if (hButton.event_click_Dn(1) == 1)
   {
-    HallTimeOff = millis();
+    ///HallTimeOff = millis();
+    ballOFF = true;
     Serial.println("hallSW1");
     allOFF(false);
   }
