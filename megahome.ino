@@ -245,10 +245,8 @@ void allLightsOFF()
     allTimer = 0;
     allTimer = myTimer.after(2 * myMINUTE, &allLightsOFF);
   }
-  ballOFF=false;
+  ballOFF = false;
 }
-
-
 
 void loop()
 {
@@ -280,13 +278,15 @@ void loop()
   {
     Serial.println("OutDoor event_click_Dn");
     OpenInOutDoorSensor = false;
-    if ((bhallLight == OFF)&&(!ballOFF))
+    if ((bhallLight == OFF) && (!ballOFF))
     {
+      ballOFF = false;
       Serial.println("start timer hall light off");
       hallTimer = myTimer.after(2 * myMINUTE, &HallLightOFF);
     }
     else
     {
+      ballOFF = false;
       hallTimer = myTimer.after(2 * myMINUTE, &allLightsOFF);
     }
   }
@@ -297,6 +297,7 @@ void loop()
     OpenInOutDoorSensor = true;
     myTimer.stop(hallTimer);
     hallTimer = 0;
+    //ballOFF = false;
   }
 #pragma endregion
 
