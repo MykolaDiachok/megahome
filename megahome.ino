@@ -142,13 +142,17 @@ void setup()
   digitalWrite(hallLight, OFF);
 
   pinMode(bathroomLight, OUTPUT);
+  pinMode(bathroomBrace, OUTPUT);
   pinMode(bathroomFan, OUTPUT);
   digitalWrite(bathroomLight, OFF);
+  digitalWrite(bathroomBrace, OFF);
   digitalWrite(bathroomFan, OFF);
 
   pinMode(wcLight, OUTPUT);
+  pinMode(wcBrace, OUTPUT);
   pinMode(wcFan, OUTPUT);
   digitalWrite(wcLight, OFF);
+  digitalWrite(wcBrace, OFF);
   digitalWrite(wcFan, OFF);
 
   //digitalWrite(wcLight, LOW);
@@ -269,7 +273,7 @@ void allLightsOFF()
   {
     myTimer.stop(allTimer);
     allTimer = 0;
-    allTimer = myTimer.after(2 * myMINUTE, &allLightsOFF);
+    allTimer = myTimer.after(1 * myMINUTE, &allLightsOFF);
   }
   ballOFF = false;
 }
@@ -374,7 +378,7 @@ void loop()
     Serial.println("bathroomSW0");
     bbathroomLight = !digitalRead(bathroomLight);
     Serial.println(bbathroomLight);
-    digitalWrite(bathroomLight, bbathroomLight);
+    //digitalWrite(bathroomLight, bbathroomLight);
     digitalWrite(bathroomBrace, bbathroomLight);
     //digitalWrite(bathroomFan, !bbathroomLight);
     if (bbathroomLight == ON)
@@ -386,7 +390,7 @@ void loop()
       }
       //bathroomTimer = myTimer.oscillate(bathroomFan, 5 * SECS_PER_MIN, !bbathroomLight);
       Serial.println("bathroomFan timer=ON");
-      bathroomTimer = myTimer.after(2 * myMINUTE, &BathRoomFanOFF);
+      bathroomTimer = myTimer.after(1 * myMINUTE, &BathRoomFanOFF);
     }
     else
     {

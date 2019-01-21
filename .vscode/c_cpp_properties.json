@@ -5,20 +5,20 @@
             "includePath": [
                 "${workspaceRoot}",
                 "C:\\Program Files (x86)\\Arduino\\tools\\**",
-                "C:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\**",                
+                "C:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\**",
                 "C:\\Program Files (x86)\\Arduino\\libraries\\**"
-            ],            
+            ],
             "browse": {
                 "path": [
                     "${workspaceRoot}",
                     "C:\\Program Files (x86)\\Arduino\\tools\\**",
-                    "C:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\**",                
+                    "C:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\**",
                     "C:\\Program Files (x86)\\Arduino\\libraries\\**"
                 ],
                 "limitSymbolsToIncludedHeaders": true
             },
-            "intelliSenseMode": "clang-x64"            
-        },        
+            "intelliSenseMode": "clang-x64"
+        },
         {
             "name": "Mac",
             "includePath": [
@@ -30,9 +30,10 @@
                 "/Applications/Arduino.app/Contents/Java/hardware/arduino/avr/variants/mega",
                 "/Applications/Arduino.app/Contents/Java/hardware/tools/avr/avr/include",
                 "/Applications/Arduino.app/Contents/Java/hardware/tools/avr/lib/gcc/avr/4.9.2/include"
-                
             ],
-            "defines": ["UBRRH"],
+            "defines": [
+                "UBRRH"
+            ],
             "browse": {
                 "path": [
                     "${workspaceRoot}",
@@ -40,14 +41,16 @@
                     "/Applications/Arduino.app/Contents/Java/hardware/arduino/avr/**",
                     "/Applications/Arduino.app/Contents/Java/libraries/**",
                     "/Applications/Arduino.app/Contents/Java/hardware/arduino/avr/cores/arduino",
-                "/Applications/Arduino.app/Contents/Java/hardware/arduino/avr/variants/mega",
-                "/Applications/Arduino.app/Contents/Java/hardware/tools/avr/avr/include",
-                "/Applications/Arduino.app/Contents/Java/hardware/tools/avr/lib/gcc/avr/4.9.2/include"
+                    "/Applications/Arduino.app/Contents/Java/hardware/arduino/avr/variants/mega",
+                    "/Applications/Arduino.app/Contents/Java/hardware/tools/avr/avr/include",
+                    "/Applications/Arduino.app/Contents/Java/hardware/tools/avr/lib/gcc/avr/4.9.2/include"
                 ],
                 "limitSymbolsToIncludedHeaders": true
             },
-            "intelliSenseMode": "clang-x64"
-        
+            "intelliSenseMode": "clang-x64",
+            "forcedInclude": [
+                "/Applications/Arduino.app/Contents/Java/hardware/arduino/avr/cores/arduino/Arduino.h"
+            ]
         }
     ],
     "version": 4
