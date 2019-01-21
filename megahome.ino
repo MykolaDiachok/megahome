@@ -336,8 +336,8 @@ void loop()
   if (hButton.event_click_Dn(0) == 1)
   {
     Serial.println("hallSW0");
-    bhallLight = digitalRead(hallLight);
-    digitalWrite(hallLight, !bhallLight);
+    bhallLight = !digitalRead(hallLight);
+    digitalWrite(hallLight, bhallLight);
   }
   if (hButton.event_click_Db(0) == 1)
   {
@@ -360,8 +360,8 @@ void loop()
   }
   if (hButton.event_click_Db(1) == 1)
   {
-    bhallLight = digitalRead(hallLight);
-    digitalWrite(hallLight, !bhallLight);
+    bhallLight = !digitalRead(hallLight);
+    digitalWrite(hallLight, bhallLight);
   }
   if (hButton.event_press_short(1) == 1)
   {
@@ -378,10 +378,10 @@ void loop()
     Serial.println("bathroomSW0");
     bbathroomLight = !digitalRead(bathroomLight);
     Serial.println(bbathroomLight);
-    //digitalWrite(bathroomLight, bbathroomLight);
+    digitalWrite(bathroomLight, bbathroomLight);
     digitalWrite(bathroomBrace, bbathroomLight);
     //digitalWrite(bathroomFan, !bbathroomLight);
-    if (bbathroomLight == ON)
+    if (bbathroomLight == OFF)
     {
       if (bathroomTimer != 0)
       {
@@ -407,6 +407,7 @@ void loop()
     Serial.println(bbathroomLight);
     digitalWrite(bathroomLight, bbathroomLight);
     digitalWrite(bathroomBrace, bbathroomLight);
+    digitalWrite(bathroomFan, OFF);
   }
   if (hButton.event_press_short(2) == 1)
   {
@@ -415,24 +416,24 @@ void loop()
   if (hButton.event_press_long(2) == 1) //only fan
   {
     Serial.println("bathroomSW0_long");
-    bbathroomFan = digitalRead(bathroomFan);
-    if (bbathroomFan == OFF) // если выключен - то включаем таймер на 15 минут
-    {
-      if (bathroomTimer != 0)
-      {
-        myTimer.stop(bathroomTimer);
-        bathroomTimer = 0;
-      }
-      Serial.println("bathroomSW0_long bathroomTimer=ON");
-      bathroomTimer = myTimer.after(10 * myMINUTE, &BathRoomFanOFF);
-    }
-    else // Если fan - включен, то выключаем
-    {
-      Serial.println("bathroomSW0_long bathroomFan=OFF");
-      digitalWrite(bathroomFan, OFF);
-      myTimer.stop(bathroomTimer);
-      bathroomTimer = 0;
-    }
+    // bbathroomFan = !digitalRead(bathroomFan);
+    // if (bbathroomFan == OFF) // если выключен - то включаем таймер на 15 минут
+    // {
+    //   if (bathroomTimer != 0)
+    //   {
+    //     myTimer.stop(bathroomTimer);
+    //     bathroomTimer = 0;
+    //   }
+    //   Serial.println("bathroomSW0_long bathroomTimer=ON");
+    //   bathroomTimer = myTimer.after(10 * mySECOND, &BathRoomFanOFF);
+    // }
+    // else // Если fan - включен, то выключаем
+    // {
+    //   Serial.println("bathroomSW0_long bathroomFan=OFF");
+    //   digitalWrite(bathroomFan, OFF);
+    //   myTimer.stop(bathroomTimer);
+    //   bathroomTimer = 0;
+    // }
   }
 #pragma endregion
 
@@ -440,20 +441,21 @@ void loop()
   if (hButton.event_click_Dn(3) == 1)
   {
     Serial.println("WCSW0");
-    bwcLight = digitalRead(wcLight);
+    bwcLight = !digitalRead(wcLight);
     Serial.println(bwcLight);
-    digitalWrite(wcLight, !bwcLight);
-    digitalWrite(wcBrace, !bwcLight);
+    digitalWrite(wcLight, bwcLight);
+    digitalWrite(wcBrace, bwcLight);
     //digitalWrite(wcFan, !bwcLight);
-    if (wcLight == ON)
+    if (bwcLight == OFF)
     {
       if (wcTimer != 0)
       {
         myTimer.stop(wcTimer);
         wcTimer = 0;
       }
+      //bathroomTimer = myTimer.oscillate(bathroomFan, 5 * SECS_PER_MIN, !bbathroomLight);
       Serial.println("wcFan timer=ON");
-      wcTimer = myTimer.after(2 * myMINUTE, &WCFanOFF);
+      wcTimer = myTimer.after(1 * myMINUTE, &WCFanOFF);
     }
     else
     {
@@ -466,16 +468,19 @@ void loop()
   if (hButton.event_click_Db(3) == 1)
   {
     Serial.println("WCSW0_db");
-    bwcLight = digitalRead(wcLight);
+    bwcLight = !digitalRead(wcLight);
     Serial.println(bwcLight);
-    digitalWrite(wcLight, !bwcLight);
-    digitalWrite(wcBrace, !bwcLight);
+    digitalWrite(wcLight, bwcLight);
+    digitalWrite(wcBrace, bwcLight);
+    digitalWrite(wcFan, bwcLight);
   }
   if (hButton.event_press_short(3) == 1)
   {
+
   }
   if (hButton.event_press_long(3) == 1)
   {
+    Serial.println("WCSW0_long");
   }
 #pragma endregion
 
@@ -496,6 +501,7 @@ void loop()
     digitalWrite(kitchenLightDots, !bkitchenLight);
     digitalWrite(kitchenLight1, !bkitchenLight);
     digitalWrite(kitchenLight2, !bkitchenLight);
+    
   }
   if (hButton.event_press_short(4) == 1)
   {
@@ -731,9 +737,12 @@ void loop()
   }
   if (hButton.event_click_Db(16) == 1)
   {
-    bchildRoomLight = digitalRead(childRoomLight);
-    digitalWrite(childRoomLight, !bchildRoomLight);
-    digitalWrite(childRoomBrace, !bchildRoomLight);
+    bchildRoomLight = !digitalRead(childRoomLight);
+    digitalWrite(childRoomLight, bchildRoomLight);
+    digitalWrite(childRoomBrace, bchildRoomLight);
+    
+    digitalWrite(hallLight, bchildRoomLight); 
+    
   }
   if (hButton.event_press_short(16) == 1)
   {
@@ -742,6 +751,7 @@ void loop()
   {
     digitalWrite(childRoomLight, OFF2);
     digitalWrite(childRoomBrace, OFF2);
+    
   }
 #pragma endregion
 
