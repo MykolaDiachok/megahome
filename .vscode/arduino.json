@@ -1,7 +1,7 @@
 {
     "sketch": "megahome.ino",
     "board": "arduino:avr:mega",
-    "port": "/dev/cu.usbmodem14101",
+    "port": "COM5",
     "configuration": "cpu=atmega2560",
     "programmer": "AVRISP mkII"
 }

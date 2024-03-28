@@ -34,13 +34,13 @@ int8_t bathroomTimer = 0;
 bool bbathroomBrace = false;
 
 #define wcSW0 8   // туалет выключатель
-#define wcLight 9 // теалет свет
+#define wcLight 44 // теалет свет
 bool bwcLight = false;
-#define wcFan 10 // туалет выключатель
+#define wcFan 43 // туалет выключатель
 bool bwcFan = false;
 int iwcFan = 0;
 int8_t wcTimer = 0;
-#define wcBrace 11 // туалет бра
+#define wcBrace 45 // туалет бра
 bool bwcBrace = false;
 
 #define kitchenSW0_0 15 // кухня выключатель кнопка 0
@@ -94,8 +94,8 @@ Button hButton;
 
 unsigned long HallTimeOff = 0;
 
-#define ON LOW
-#define OFF HIGH
+#define ON HIGH
+#define OFF LOW
 
 #define ON2 HIGH
 #define OFF2 LOW
@@ -599,11 +599,12 @@ void loop()
   if (hButton.event_click_Dn(9) == 1)
   {
     Serial.println("livingRoomSW1");
+    blivingRoomBrace = digitalRead(livingRoomBrace);
+    digitalWrite(livingRoomBrace, !blivingRoomBrace);
   }
   if (hButton.event_click_Db(9) == 1)
   {
-    blivingRoomBrace = digitalRead(livingRoomBrace);
-    digitalWrite(livingRoomBrace, !blivingRoomBrace);
+    
   }
   if (hButton.event_press_short(9) == 1)
   {
