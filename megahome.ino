@@ -1,104 +1,52 @@
 #include "Button.h"
 #include "Timer.h"
+#include "BConstants.h"
+#include "TimeConstants.h"
+#include "Light.h"
 
 Timer myTimer;
 
-#define mySECOND (1000L)
-#define myMINUTE (60 * mySECOND)
-#define myHOUR (60 * myMINUTE)
-#define myDAY (24 * myHOUR)
-
-/* Useful Macros for getting elapsed time */
-#define numberOfSeconds(_time_) (_time_ % SECS_PER_MIN)
-#define numberOfMinutes(_time_) ((_time_ / SECS_PER_MIN) % SECS_PER_MIN)
-#define numberOfHours(_time_) ((_time_ % SECS_PER_DAY) / SECS_PER_HOUR)
-#define elapsedDays(_time_) (_time_ / SECS_PER_DAY)
-
-#define hallSW0 14 // выключатель в холе кнопка 0
-
-#define hallSW1 2   // выключатель в холе кнопка 1
-#define hallLight 3 // коридор свет
 bool bhallLight = false;
-int8_t hallTimer = 0; // Таймер холла
-int8_t allTimer = 0;  // общий таймер
+int8_t hallTimer = 0; // hallway timer
+int8_t allTimer = 0;  // main timer
 
-#define bathroomSW0 4   // ванная выключатель
-#define bathroomLight 5 // ванная свет
 bool bbathroomLight = false;
-#define bathroomFan 6 // ванная вентилятор
 bool bbathroomFan = false;
 int ibathroomFan = 0;
 int8_t bathroomTimer = 0;
-
-#define bathroomBrace 7 // ванная бра
 bool bbathroomBrace = false;
 
-#define wcSW0 8   // туалет выключатель
-#define wcLight 44 // теалет свет
+
 bool bwcLight = false;
-#define wcFan 43 // туалет выключатель
 bool bwcFan = false;
 int iwcFan = 0;
 int8_t wcTimer = 0;
-#define wcBrace 45 // туалет бра
 bool bwcBrace = false;
 
-#define kitchenSW0_0 15 // кухня выключатель кнопка 0
-#define kitchenSW0_1 16 // кухня выключатель кнопка 1
-#define kitchenSW1_0 17 // кухня выключатель кнопка возле поверхности кнопка 0
-#define kitchenLight 18
 bool bkitchenLight = false;
-#define kitchenLight1 19
 bool bkitchenLight1 = false;
-#define kitchenLight2 20
 bool bkitchenLight2 = false;
-#define kitchenLightDots 21
+
 bool bkitchenLightDots = false;
 
-#define balconySW0 22
-#define balconyLight 23
 bool bbalconyLight = false;
 
-#define livingRoomSW0 24
-#define livingRoomSW1 25
-#define livingRoomLight 26
 bool blivingRoomLight = false;
-#define livingRoomBrace 27
 bool blivingRoomBrace = false;
 
-#define bedRoomSW0_0 29 //Mykola
-#define bedRoomSW0_1 28 //Mykola  
-#define bedRoomSW1_0 30
-#define bedRoomSW1_1 31
-#define bedRoomSW2_0 32
-#define bedRoomSW2_1 33
-#define bedRoomLight 34
-bool bbedRoomLight = false;
-#define bedRoomBrace0 35
-bool bbedRoomBrace0 = false;
-#define bedRoomBrace1 36
-bool bbedRoomBrace1 = false;
 
-#define childRoomSW0_0 37
-//#define childRoomSW0_1 38
-#define childRoomSW1_0 38
-//#define childRoomSW1_1 40
-#define childRoomLight 41
+bool bbedRoomLight = false;
+bool bbedRoomBrace0 = false;
+bool bbedRoomBrace1 = false;
 bool bchildRoomLight = false;
-#define childRoomBrace 42
 bool bchildRoomBrace = false;
 
-#define inOutDoorSensor 12
+
 
 Button hButton;
 
 unsigned long HallTimeOff = 0;
 
-#define ON HIGH
-#define OFF LOW
-
-#define ON2 HIGH
-#define OFF2 LOW
 
 void setup()
 {
@@ -173,27 +121,27 @@ void setup()
   digitalWrite(balconyLight, OFF);
 
   pinMode(livingRoomLight, OUTPUT);
-  digitalWrite(livingRoomLight, OFF2);
+  digitalWrite(livingRoomLight, OFF);
 
   //livingRoomBrace
 
   pinMode(livingRoomBrace, OUTPUT);
-  digitalWrite(livingRoomBrace, OFF2);
+  digitalWrite(livingRoomBrace, OFF);
 
   pinMode(bedRoomLight, OUTPUT);
-  digitalWrite(bedRoomLight, OFF2);
+  digitalWrite(bedRoomLight, OFF);
 
   pinMode(bedRoomBrace0, OUTPUT);
-  digitalWrite(bedRoomBrace0, OFF2);
+  digitalWrite(bedRoomBrace0, OFF);
 
   pinMode(bedRoomBrace1, OUTPUT);
-  digitalWrite(bedRoomBrace1, OFF2);
+  digitalWrite(bedRoomBrace1, OFF);
 
   pinMode(childRoomLight, OUTPUT);
-  digitalWrite(childRoomLight, OFF2);
+  digitalWrite(childRoomLight, OFF);
 
   pinMode(childRoomBrace, OUTPUT);
-  digitalWrite(childRoomBrace, OFF2);
+  digitalWrite(childRoomBrace, OFF);
   // put your setup code here, to run once:
 }
 
@@ -247,15 +195,15 @@ void allOFF(bool withHall = false)
 
   digitalWrite(balconyLight, OFF);
 
-  digitalWrite(livingRoomLight, OFF2);
-  digitalWrite(livingRoomBrace, OFF2);
+  digitalWrite(livingRoomLight, OFF);
+  digitalWrite(livingRoomBrace, OFF);
 
-  digitalWrite(bedRoomLight, OFF2);
-  digitalWrite(bedRoomBrace0, OFF2);
-  digitalWrite(bedRoomBrace1, OFF2);
+  digitalWrite(bedRoomLight, OFF);
+  digitalWrite(bedRoomBrace0, OFF);
+  digitalWrite(bedRoomBrace1, OFF);
 
-  digitalWrite(childRoomLight, OFF2);
-  digitalWrite(childRoomBrace, OFF2);
+  digitalWrite(childRoomLight, OFF);
+  digitalWrite(childRoomBrace, OFF);
 
   Serial.println("");
 }
@@ -750,8 +698,8 @@ void loop()
   }
   if (hButton.event_press_long(16) == 1)
   {
-    digitalWrite(childRoomLight, OFF2);
-    digitalWrite(childRoomBrace, OFF2);
+    digitalWrite(childRoomLight, OFF);
+    digitalWrite(childRoomBrace, OFF);
     
   }
 #pragma endregion
@@ -796,8 +744,8 @@ void loop()
   }
   if (hButton.event_press_long(17) == 1)
   {
-    digitalWrite(childRoomLight, OFF2);
-    digitalWrite(childRoomBrace, OFF2);
+    digitalWrite(childRoomLight, OFF);
+    digitalWrite(childRoomBrace, OFF);
   }
 #pragma endregion
 //#pragma region childRoomSW1_1
