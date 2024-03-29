@@ -1,14 +1,17 @@
-#define hallSW0 14 // switch in the hall button 0
+#ifndef MainConstants_h
+#define MainConstants_h
 
-#define hallSW1 2   //switch in the hall button 1
-#define hallLight 3 // corridor light
 
-#define bathroomSW0 4   // bathroom switch
-#define bathroomLight 5 // bathroom light
 
-#define bathroomFan 6 // bathroom fan
+#define PIN_HALL_SW0 14 // switch in the hall button 0
 
-#define bathroomBrace 7 // bathroom brace
+#define PIN_HALL_SW1 2   //switch in the hall button 1
+#define PIN_HALL_LIGHT 3 // corridor light
+
+#define PIN_BATHROOM_SW0 4   // bathroom switch
+#define PIN_BATHROOM_LIGHT 5 // bathroom light
+#define PIN_BATHROOM_FAN 6 // bathroom fan
+#define PIN_BATHROOM_BRACE 7 // bathroom brace
 
 
 #define wcSW0 8   // wc switch
@@ -56,3 +59,5 @@
 
 #define ON HIGH
 #define OFF LOW
+
+#endif

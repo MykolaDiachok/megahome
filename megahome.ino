@@ -1,21 +1,19 @@
 #include "Button.h"
 #include "Timer.h"
-#include "BConstants.h"
+#include "MainConstants.h"
 #include "TimeConstants.h"
-#include "Light.h"
+#include "PowerDevice.h"
 
 Timer myTimer;
 
-bool bhallLight = false;
+PowerDevice light_hall(PIN_HALL_LIGHT);
+
 int8_t hallTimer = 0; // hallway timer
 int8_t allTimer = 0;  // main timer
 
-bool bbathroomLight = false;
-bool bbathroomFan = false;
-int ibathroomFan = 0;
-int8_t bathroomTimer = 0;
-bool bbathroomBrace = false;
-
+PowerDevice light_bathroom(PIN_BATHROOM_LIGHT);
+PowerDevice fan_bathroom(PIN_BATHROOM_FAN);
+PowerDevice light_bathroomBrace(PIN_BATHROOM_BRACE);
 
 bool bwcLight = false;
 bool bwcFan = false;
@@ -34,67 +32,69 @@ bool bbalconyLight = false;
 bool blivingRoomLight = false;
 bool blivingRoomBrace = false;
 
-
 bool bbedRoomLight = false;
 bool bbedRoomBrace0 = false;
 bool bbedRoomBrace1 = false;
 bool bchildRoomLight = false;
 bool bchildRoomBrace = false;
 
-
-
 Button hButton;
 
 unsigned long HallTimeOff = 0;
 
-
 void setup()
 {
   Serial.begin(9600);
-  //pinMode(inOutDoorSensor, INPUT);
+  // pinMode(inOutDoorSensor, INPUT);
   hButton.NO(); // N.O. Normal Open
   // hButton.NC(); // N.C. Normal Closed
-  //hButton.pullUp();
+  // hButton.pullUp();
   hButton.pullDn(); // - подтяжка пинов кнопок к GND
   hButton.duration_bounce(50);
   hButton.duration_click_Db(250);
   hButton.duration_inactivity_Up(5000);
   hButton.duration_inactivity_Dn(1000);
   hButton.duration_press(500);
-  hButton.button(hallSW0 //0
-                  , hallSW1 //1
-                  , bathroomSW0 //2
-                  , wcSW0 //3
-                  , kitchenSW0_0 //4
-                  , kitchenSW0_1 //5
-                  , kitchenSW1_0 //6
-                  , balconySW0 //7
-                  , livingRoomSW0 //8
-                  , livingRoomSW1 //9
-                  , bedRoomSW0_0 //10
-                  , bedRoomSW0_1  //11
-                  , bedRoomSW1_0  //12
-                  , bedRoomSW1_1  //13
-                  , bedRoomSW2_0  //14
-                  , bedRoomSW2_1  //15
-                  , childRoomSW0_0  //16
-                  //, childRoomSW0_1  //17
-                  , childRoomSW1_0  //17
-                  // , childRoomSW1_1  //19
-                  , inOutDoorSensor //18
-                  ); // arduino pins connected to button
-
-  //pinMode(inOutDoorSensor, INPUT); // подключение
-  digitalWrite(hallLight, LOW);
-  pinMode(hallLight, OUTPUT);
-  digitalWrite(hallLight, OFF);
-
-  pinMode(bathroomLight, OUTPUT);
-  pinMode(bathroomBrace, OUTPUT);
-  pinMode(bathroomFan, OUTPUT);
-  digitalWrite(bathroomLight, OFF);
-  digitalWrite(bathroomBrace, OFF);
-  digitalWrite(bathroomFan, OFF);
+  hButton.button(PIN_HALL_SW0 // 0
+                 ,
+                 PIN_HALL_SW1 // 1
+                 ,
+                 PIN_BATHROOM_SW0 // 2
+                 ,
+                 wcSW0 // 3
+                 ,
+                 kitchenSW0_0 // 4
+                 ,
+                 kitchenSW0_1 // 5
+                 ,
+                 kitchenSW1_0 // 6
+                 ,
+                 balconySW0 // 7
+                 ,
+                 livingRoomSW0 // 8
+                 ,
+                 livingRoomSW1 // 9
+                 ,
+                 bedRoomSW0_0 // 10
+                 ,
+                 bedRoomSW0_1 // 11
+                 ,
+                 bedRoomSW1_0 // 12
+                 ,
+                 bedRoomSW1_1 // 13
+                 ,
+                 bedRoomSW2_0 // 14
+                 ,
+                 bedRoomSW2_1 // 15
+                 ,
+                 childRoomSW0_0 // 16
+                 //, childRoomSW0_1  //17
+                 ,
+                 childRoomSW1_0 // 17
+                 // , childRoomSW1_1  //19
+                 ,
+                 inOutDoorSensor // 18
+  );                             // arduino pins connected to button
 
   pinMode(wcLight, OUTPUT);
   pinMode(wcBrace, OUTPUT);
@@ -103,7 +103,7 @@ void setup()
   digitalWrite(wcBrace, OFF);
   digitalWrite(wcFan, OFF);
 
-  //digitalWrite(wcLight, LOW);
+  // digitalWrite(wcLight, LOW);
   pinMode(kitchenLight, OUTPUT);
   digitalWrite(kitchenLight, OFF);
 
@@ -116,14 +116,14 @@ void setup()
   pinMode(kitchenLightDots, OUTPUT);
   digitalWrite(kitchenLightDots, OFF);
 
-  //balconyLight
+  // balconyLight
   pinMode(balconyLight, OUTPUT);
   digitalWrite(balconyLight, OFF);
 
   pinMode(livingRoomLight, OUTPUT);
   digitalWrite(livingRoomLight, OFF);
 
-  //livingRoomBrace
+  // livingRoomBrace
 
   pinMode(livingRoomBrace, OUTPUT);
   digitalWrite(livingRoomBrace, OFF);
@@ -156,34 +156,18 @@ void WCFanOFF()
   wcTimer = 0;
 }
 
-void BathRoomFanOFF()
-{
-  Serial.println("bathroomFan timer=OFF");
-  digitalWrite(bathroomFan, OFF);
-  myTimer.stop(bathroomTimer);
-  bathroomTimer = 0;
-}
-
-void HallLightOFF()
-{
-  Serial.println("hallLight timer end=OFF");
-  digitalWrite(hallLight, OFF);
-  myTimer.stop(hallTimer);
-  hallTimer = 0;
-}
-
 void allOFF(bool withHall = false)
 {
   Serial.print("allOFF");
   if (withHall)
   {
     Serial.println(" with hall");
-    digitalWrite(hallLight, OFF);
+    light_hall.off();
   }
-  digitalWrite(bathroomLight, OFF);
-  digitalWrite(bathroomBrace, OFF);
-  digitalWrite(bathroomFan, OFF);
-  
+  light_bathroom.off();
+  light_bathroomBrace.off();
+  fan_bathroom.off();
+
   digitalWrite(wcLight, OFF);
   digitalWrite(wcBrace, OFF);
   digitalWrite(wcFan, OFF);
@@ -221,7 +205,7 @@ void allLightsOFF()
   {
     myTimer.stop(allTimer);
     allTimer = 0;
-    allTimer = myTimer.after(1 * myMINUTE, &allLightsOFF);
+    allTimer = myTimer.after(1 * MINUTE, &allLightsOFF);
   }
   ballOFF = false;
 }
@@ -229,53 +213,38 @@ void allLightsOFF()
 void loop()
 {
   myTimer.update();
-  // bool val = digitalRead(inOutDoorSensor);
-  // if ((!OpenInOutDoorSensor) && (!val) && (digitalRead(hallLight) == OFF))
-  // {
-  //   digitalWrite(hallLight, ON);
-  //   Serial.print("in out door sensor=");
-  //   Serial.println("ON");
-  //   OpenInOutDoorSensor = true;
-  //   HallTimeOff = millis();
-  // }
-  // else
-  // {
-  //   OpenInOutDoorSensor = false;
-  // }
-  // if ((digitalRead(hallLight) == ON) && (HallTimeOff > 0) && (millis() - HallTimeOff >= 60000))
-  // {
-  //   Serial.println("all off timer");
-  //   HallTimeOff = 0;
-  //   allOFF(true);
-  // }
+  light_hall.update();
+  light_bathroom.update();
+  light_bathroomBrace.update();
+  fan_bathroom.update();
 
   hButton.read();
 //
-#pragma region OutDoor //TODO доделать
-  if (hButton.event_click_Dn(18) == 1) 
+#pragma region OutDoor //TODO needs to be finalized
+  if (hButton.event_click_Dn(18) == 1)
   {
     Serial.println("OutDoor event_click_Dn");
     OpenInOutDoorSensor = false;
-    if ((bhallLight == OFF) && (!ballOFF))
+    if ((light_hall.isOn() == false) && (!ballOFF))
     {
       ballOFF = false;
       Serial.println("start timer hall light off");
-      hallTimer = myTimer.after(2 * myMINUTE, &HallLightOFF);
+      light_hall.scheduleOffMinutes(2);
     }
     else
     {
       ballOFF = false;
-      hallTimer = myTimer.after(2 * myMINUTE, &allLightsOFF);
+      hallTimer = myTimer.after(2 * MINUTE, &allLightsOFF);
     }
   }
   if (hButton.event_click_Up(18) == 1)
   {
     Serial.println("OutDoor event_click_Up");
-    digitalWrite(hallLight, ON);
+    light_hall.on();
     OpenInOutDoorSensor = true;
     myTimer.stop(hallTimer);
     hallTimer = 0;
-    //ballOFF = false;
+    // ballOFF = false;
   }
 #pragma endregion
 
@@ -283,9 +252,8 @@ void loop()
 #pragma region hallSW0
   if (hButton.event_click_Dn(0) == 1)
   {
-    Serial.println("hallSW0");
-    bhallLight = !digitalRead(hallLight);
-    digitalWrite(hallLight, bhallLight);
+    Serial.println("pinHallSW0");
+    light_hall.toggle();
   }
   if (hButton.event_click_Db(0) == 1)
   {
@@ -301,15 +269,13 @@ void loop()
 #pragma region hallSW1
   if (hButton.event_click_Dn(1) == 1)
   {
-    ///HallTimeOff = millis();
     ballOFF = true;
-    Serial.println("hallSW1");
+    Serial.println("PIN_HALL_SW1");
     allOFF(false);
   }
   if (hButton.event_click_Db(1) == 1)
   {
-    bhallLight = !digitalRead(hallLight);
-    digitalWrite(hallLight, bhallLight);
+    light_hall.toggle();
   }
   if (hButton.event_press_short(1) == 1)
   {
@@ -323,65 +289,34 @@ void loop()
 #pragma region bathroom
   if (hButton.event_click_Dn(2) == 1)
   {
-    Serial.println("bathroomSW0");
-    bbathroomLight = !digitalRead(bathroomLight);
-    Serial.println(bbathroomLight);
-    digitalWrite(bathroomLight, bbathroomLight);
-    digitalWrite(bathroomBrace, bbathroomLight);
-    //digitalWrite(bathroomFan, !bbathroomLight);
-    if (bbathroomLight == OFF)
+    Serial.println("PIN_BATHROOM_SW0");
+    light_bathroom.toggle();
+    light_bathroomBrace.setState(light_bathroom.isOn());
+    if (light_bathroom.isOn())
     {
-      if (bathroomTimer != 0)
-      {
-        myTimer.stop(bathroomTimer);
-        bathroomTimer = 0;
-      }
-      //bathroomTimer = myTimer.oscillate(bathroomFan, 5 * SECS_PER_MIN, !bbathroomLight);
-      Serial.println("bathroomFan timer=ON");
-      bathroomTimer = myTimer.after(1 * myMINUTE, &BathRoomFanOFF);
+      fan_bathroom.on();
     }
     else
     {
-      myTimer.stop(bathroomTimer);
-      bathroomTimer = 0;
-      digitalWrite(bathroomFan, ON);
-      Serial.println("bathroomFan=ON");
+      fan_bathroom.scheduleOffMinutes(2);
     }
   }
-  if (hButton.event_click_Db(2) == 1) //only lights
+  if (hButton.event_click_Db(2) == 1) // only lights
   {
-    Serial.println("bathroomSW0_db");
-    bbathroomLight = !digitalRead(bathroomLight);
-    Serial.println(bbathroomLight);
-    digitalWrite(bathroomLight, bbathroomLight);
-    digitalWrite(bathroomBrace, bbathroomLight);
-    digitalWrite(bathroomFan, OFF);
+    Serial.println("PIN_BATHROOM_SW0_db");
+    light_bathroom.toggle();
+    light_bathroomBrace.setState(light_bathroom.isOn());
+    fan_bathroom.off();
   }
   if (hButton.event_press_short(2) == 1)
   {
-    Serial.println("bathroomSW0_short");
+    Serial.println("PIN_BATHROOM_SW0_short");
   }
-  if (hButton.event_press_long(2) == 1) //only fan
+  if (hButton.event_press_long(2) == 1) // only fan
   {
-    Serial.println("bathroomSW0_long");
-    // bbathroomFan = !digitalRead(bathroomFan);
-    // if (bbathroomFan == OFF) // если выключен - то включаем таймер на 15 минут
-    // {
-    //   if (bathroomTimer != 0)
-    //   {
-    //     myTimer.stop(bathroomTimer);
-    //     bathroomTimer = 0;
-    //   }
-    //   Serial.println("bathroomSW0_long bathroomTimer=ON");
-    //   bathroomTimer = myTimer.after(10 * mySECOND, &BathRoomFanOFF);
-    // }
-    // else // Если fan - включен, то выключаем
-    // {
-    //   Serial.println("bathroomSW0_long bathroomFan=OFF");
-    //   digitalWrite(bathroomFan, OFF);
-    //   myTimer.stop(bathroomTimer);
-    //   bathroomTimer = 0;
-    // }
+    Serial.println("PIN_BATHROOM_SW0_long");
+    fan_bathroom.on();
+    fan_bathroom.scheduleOffMinutes(2);
   }
 #pragma endregion
 
@@ -393,7 +328,7 @@ void loop()
     Serial.println(bwcLight);
     digitalWrite(wcLight, bwcLight);
     digitalWrite(wcBrace, bwcLight);
-    //digitalWrite(wcFan, !bwcLight);
+    // digitalWrite(wcFan, !bwcLight);
     if (bwcLight == OFF)
     {
       if (wcTimer != 0)
@@ -401,9 +336,9 @@ void loop()
         myTimer.stop(wcTimer);
         wcTimer = 0;
       }
-      //bathroomTimer = myTimer.oscillate(bathroomFan, 5 * SECS_PER_MIN, !bbathroomLight);
+      // bathroomTimer = myTimer.oscillate(PIN_BATHROOM_FAN, 5 * SECS_PER_MIN, !bbathroomLight);
       Serial.println("wcFan timer=ON");
-      wcTimer = myTimer.after(1 * myMINUTE, &WCFanOFF);
+      wcTimer = myTimer.after(1 * MINUTE, &WCFanOFF);
     }
     else
     {
@@ -424,7 +359,6 @@ void loop()
   }
   if (hButton.event_press_short(3) == 1)
   {
-
   }
   if (hButton.event_press_long(3) == 1)
   {
@@ -439,7 +373,7 @@ void loop()
     Serial.println("kitchenSW0_0");
     bkitchenLight = digitalRead(kitchenLight);
     digitalWrite(kitchenLight, !bkitchenLight);
-    digitalWrite(kitchenLightDots, !bkitchenLight); //TODO сейчас не работает основной, убрать когда заработает
+    digitalWrite(kitchenLightDots, !bkitchenLight); // TODO сейчас не работает основной, убрать когда заработает
   }
   if (hButton.event_click_Db(4) == 1)
   {
@@ -449,7 +383,6 @@ void loop()
     digitalWrite(kitchenLightDots, !bkitchenLight);
     digitalWrite(kitchenLight1, !bkitchenLight);
     digitalWrite(kitchenLight2, !bkitchenLight);
-    
   }
   if (hButton.event_press_short(4) == 1)
   {
@@ -552,7 +485,6 @@ void loop()
   }
   if (hButton.event_click_Db(9) == 1)
   {
-    
   }
   if (hButton.event_press_short(9) == 1)
   {
@@ -591,8 +523,7 @@ void loop()
   if (hButton.event_click_Dn(11) == 1)
   {
     Serial.println("bedRoomSW0_1");
-    bhallLight = digitalRead(hallLight);
-    digitalWrite(hallLight, !bhallLight);
+    light_hall.toggle();
   }
   if (hButton.event_click_Db(11) == 1)
   {
@@ -689,9 +620,8 @@ void loop()
     bchildRoomLight = !digitalRead(childRoomLight);
     digitalWrite(childRoomLight, bchildRoomLight);
     digitalWrite(childRoomBrace, bchildRoomLight);
-    
-    digitalWrite(hallLight, bchildRoomLight); 
-    
+
+    digitalWrite(PIN_HALL_LIGHT, bchildRoomLight);
   }
   if (hButton.event_press_short(16) == 1)
   {
@@ -700,30 +630,29 @@ void loop()
   {
     digitalWrite(childRoomLight, OFF);
     digitalWrite(childRoomBrace, OFF);
-    
   }
 #pragma endregion
 
-//#pragma region childRoomSW0_1
-//  if (hButton.event_click_Dn(17) == 1)
-//  {
-//    Serial.println("childRoomSW0_1");
-//    bchildRoomLight = digitalRead(childRoomLight);
-//    digitalWrite(childRoomLight, !bchildRoomLight);
-//    digitalWrite(childRoomBrace, !bchildRoomLight);
-//    //bchildRoomLight = !bchildRoomLight;
-//    //digitalWrite(childRoomLight, bchildRoomLight);
-//  }
-//  if (hButton.event_click_Db(17) == 1)
-//  {
-//  }
-//  if (hButton.event_press_short(17) == 1)
-//  {
-//  }
-//  if (hButton.event_press_long(17) == 1)
-//  {
- // }
-//#pragma endregion
+  // #pragma region childRoomSW0_1
+  //   if (hButton.event_click_Dn(17) == 1)
+  //   {
+  //     Serial.println("childRoomSW0_1");
+  //     bchildRoomLight = digitalRead(childRoomLight);
+  //     digitalWrite(childRoomLight, !bchildRoomLight);
+  //     digitalWrite(childRoomBrace, !bchildRoomLight);
+  //     //bchildRoomLight = !bchildRoomLight;
+  //     //digitalWrite(childRoomLight, bchildRoomLight);
+  //   }
+  //   if (hButton.event_click_Db(17) == 1)
+  //   {
+  //   }
+  //   if (hButton.event_press_short(17) == 1)
+  //   {
+  //   }
+  //   if (hButton.event_press_long(17) == 1)
+  //   {
+  //  }
+  // #pragma endregion
 
 #pragma region childRoomSW1_0
   if (hButton.event_click_Dn(17) == 1)
@@ -748,31 +677,31 @@ void loop()
     digitalWrite(childRoomBrace, OFF);
   }
 #pragma endregion
-//#pragma region childRoomSW1_1
-//  if (hButton.event_click_Dn(19) == 1)
-//  {
-//    Serial.println("childRoomSW1_1");
-//    bchildRoomLight = digitalRead(childRoomLight);
-//    digitalWrite(childRoomLight, !bchildRoomLight);
-//    //bchildRoomLight = !bchildRoomLight;
-//    //digitalWrite(childRoomLight, bchildRoomLight);
-//  }
-//  if (hButton.event_click_Db(19) == 1)
-//  {
-//  }
-//  if (hButton.event_press_short(19) == 1)
-//  {
-//  }
-//  if (hButton.event_press_long(19) == 1)
-//  {
-//  }
+// #pragma region childRoomSW1_1
+//   if (hButton.event_click_Dn(19) == 1)
+//   {
+//     Serial.println("childRoomSW1_1");
+//     bchildRoomLight = digitalRead(childRoomLight);
+//     digitalWrite(childRoomLight, !bchildRoomLight);
+//     //bchildRoomLight = !bchildRoomLight;
+//     //digitalWrite(childRoomLight, bchildRoomLight);
+//   }
+//   if (hButton.event_click_Db(19) == 1)
+//   {
+//   }
+//   if (hButton.event_press_short(19) == 1)
+//   {
+//   }
+//   if (hButton.event_press_long(19) == 1)
+//   {
+//   }
 #pragma endregion
 
 #pragma endregion
 
   if (hButton.event_click_Dn() == 1) // - событие нажатия                          кнопки
   {
-    //Serial.println("all event_click_Dn");
+    // Serial.println("all event_click_Dn");
   }
   if (hButton.event_click_Db() == 1) // - событие двойного щелчка                  кнопки
   {
@@ -785,6 +714,6 @@ void loop()
   }
   if (hButton.event_click_Up() == 1)
   {
-    //Serial.println("all event_click_Up");
+    // Serial.println("all event_click_Up");
   }
 }
