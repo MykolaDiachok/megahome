@@ -14,10 +14,10 @@
 #define PIN_BATHROOM_BRACE 7 // bathroom brace
 
 
-#define wcSW0 8   // wc switch
-#define wcLight 44 // wc light
-#define wcFan 43 // wc fan
-#define wcBrace 45 // wc brace
+#define PIN_WS_SW0 8   // wc switch
+#define PIN_WC_LIGHT 44 // wc light
+#define PIN_WC_FAN 43 // wc fan
+#define PIN_WC_BRACE 45 // wc brace
 
 
 #define kitchenSW0_0 15 // кухня выключатель кнопка 0

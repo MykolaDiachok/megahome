@@ -15,11 +15,9 @@ PowerDevice light_bathroom(PIN_BATHROOM_LIGHT);
 PowerDevice fan_bathroom(PIN_BATHROOM_FAN);
 PowerDevice light_bathroomBrace(PIN_BATHROOM_BRACE);
 
-bool bwcLight = false;
-bool bwcFan = false;
-int iwcFan = 0;
-int8_t wcTimer = 0;
-bool bwcBrace = false;
+PowerDevice light_wc(PIN_WC_LIGHT);
+PowerDevice fan_wc(PIN_WC_FAN);
+PowerDevice light_wcBrace(PIN_WC_BRACE);
 
 bool bkitchenLight = false;
 bool bkitchenLight1 = false;
@@ -61,7 +59,7 @@ void setup()
                  ,
                  PIN_BATHROOM_SW0 // 2
                  ,
-                 wcSW0 // 3
+                 PIN_WS_SW0 // 3
                  ,
                  kitchenSW0_0 // 4
                  ,
@@ -96,14 +94,9 @@ void setup()
                  inOutDoorSensor // 18
   );                             // arduino pins connected to button
 
-  pinMode(wcLight, OUTPUT);
-  pinMode(wcBrace, OUTPUT);
-  pinMode(wcFan, OUTPUT);
-  digitalWrite(wcLight, OFF);
-  digitalWrite(wcBrace, OFF);
-  digitalWrite(wcFan, OFF);
 
-  // digitalWrite(wcLight, LOW);
+
+  // digitalWrite(PIN_WC_LIGHT, LOW);
   pinMode(kitchenLight, OUTPUT);
   digitalWrite(kitchenLight, OFF);
 
@@ -148,14 +141,6 @@ void setup()
 bool OpenInOutDoorSensor = false;
 bool ballOFF = false;
 
-void WCFanOFF()
-{
-  Serial.println("WCFan timer=OFF");
-  digitalWrite(wcFan, OFF);
-  myTimer.stop(wcTimer);
-  wcTimer = 0;
-}
-
 void allOFF(bool withHall = false)
 {
   Serial.print("allOFF");
@@ -168,9 +153,9 @@ void allOFF(bool withHall = false)
   light_bathroomBrace.off();
   fan_bathroom.off();
 
-  digitalWrite(wcLight, OFF);
-  digitalWrite(wcBrace, OFF);
-  digitalWrite(wcFan, OFF);
+  light_wc.off();
+  light_wcBrace.off();
+  fan_wc.off();
 
   digitalWrite(kitchenLight, OFF);
   digitalWrite(kitchenLight1, OFF);
@@ -214,9 +199,14 @@ void loop()
 {
   myTimer.update();
   light_hall.update();
+
   light_bathroom.update();
   light_bathroomBrace.update();
   fan_bathroom.update();
+
+  light_wc.update();
+  light_wcBrace.update();
+  fan_wc.update();
 
   hButton.read();
 //
@@ -323,46 +313,35 @@ void loop()
 #pragma region WC
   if (hButton.event_click_Dn(3) == 1)
   {
-    Serial.println("WCSW0");
-    bwcLight = !digitalRead(wcLight);
-    Serial.println(bwcLight);
-    digitalWrite(wcLight, bwcLight);
-    digitalWrite(wcBrace, bwcLight);
-    // digitalWrite(wcFan, !bwcLight);
-    if (bwcLight == OFF)
+    Serial.println("PIN_BATHROOM_SW0");
+    light_wc.toggle();
+    bool wcIsOn = light_bathroom.isOn();
+    light_bathroomBrace.setState(wcIsOn);
+    if (wcIsOn)
     {
-      if (wcTimer != 0)
-      {
-        myTimer.stop(wcTimer);
-        wcTimer = 0;
-      }
-      // bathroomTimer = myTimer.oscillate(PIN_BATHROOM_FAN, 5 * SECS_PER_MIN, !bbathroomLight);
-      Serial.println("wcFan timer=ON");
-      wcTimer = myTimer.after(1 * MINUTE, &WCFanOFF);
+      fan_wc.on();
     }
     else
     {
-      myTimer.stop(wcTimer);
-      wcTimer = 0;
-      digitalWrite(wcFan, ON);
-      Serial.println("wcFan=ON");
+      fan_wc.scheduleOffMinutes(2);
     }
+    
   }
   if (hButton.event_click_Db(3) == 1)
   {
-    Serial.println("WCSW0_db");
-    bwcLight = !digitalRead(wcLight);
-    Serial.println(bwcLight);
-    digitalWrite(wcLight, bwcLight);
-    digitalWrite(wcBrace, bwcLight);
-    digitalWrite(wcFan, bwcLight);
+    light_wc.toggle();
+    bool wcIsOn = light_bathroom.isOn();
+    light_bathroomBrace.setState(wcIsOn);
+    fan_wc.off();
   }
   if (hButton.event_press_short(3) == 1)
   {
   }
   if (hButton.event_press_long(3) == 1)
   {
-    Serial.println("WCSW0_long");
+    Serial.println("PIN_BATHROOM_SW00_long");
+    fan_wc.on();
+    fan_wc.scheduleOffMinutes(2);
   }
 #pragma endregion
 
