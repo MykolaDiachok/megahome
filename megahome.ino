@@ -19,16 +19,15 @@ PowerDevice light_wc(PIN_WC_LIGHT);
 PowerDevice fan_wc(PIN_WC_FAN);
 PowerDevice light_wcBrace(PIN_WC_BRACE);
 
-bool bkitchenLight = false;
-bool bkitchenLight1 = false;
-bool bkitchenLight2 = false;
+PowerDevice light_kitchen0(PIN_KITCHEN_LIGHT0);
+PowerDevice light_kitchen1(PIN_KITCHEN_LIGHT1);
+PowerDevice light_kitchen2(PIN_KITCHEN_LIGHT2);
+PowerDevice light_kitchen_dots(PIN_KITCHEN_LIGHT_DOTS);
 
-bool bkitchenLightDots = false;
+PowerDevice light_balcony(PIN_BALCONY_LIGHT);
 
-bool bbalconyLight = false;
-
-bool blivingRoomLight = false;
-bool blivingRoomBrace = false;
+PowerDevice light_livingRoom(PIN_LIVINGROOM_LIGHT);
+PowerDevice light_livingRoomBrace(PIN_LIVINGROOM_BRACE);
 
 bool bbedRoomLight = false;
 bool bbedRoomBrace0 = false;
@@ -61,17 +60,17 @@ void setup()
                  ,
                  PIN_WS_SW0 // 3
                  ,
-                 kitchenSW0_0 // 4
+                 PIN_KITCHEN_SW0_0 // 4
                  ,
-                 kitchenSW0_1 // 5
+                 PIN_KITCHEN_SW0_1 // 5
                  ,
-                 kitchenSW1_0 // 6
+                 PIN_KITCHEN_SW1_0 // 6
                  ,
-                 balconySW0 // 7
+                 PIN_BALCONY_SW0 // 7
                  ,
-                 livingRoomSW0 // 8
+                 PIN_LIVINGRROOM_SW0 // 8
                  ,
-                 livingRoomSW1 // 9
+                 PIN_LIVINGRROOM_SW1 // 9
                  ,
                  bedRoomSW0_0 // 10
                  ,
@@ -94,32 +93,6 @@ void setup()
                  inOutDoorSensor // 18
   );                             // arduino pins connected to button
 
-
-
-  // digitalWrite(PIN_WC_LIGHT, LOW);
-  pinMode(kitchenLight, OUTPUT);
-  digitalWrite(kitchenLight, OFF);
-
-  pinMode(kitchenLight1, OUTPUT);
-  digitalWrite(kitchenLight1, OFF);
-
-  pinMode(kitchenLight2, OUTPUT);
-  digitalWrite(kitchenLight2, OFF);
-
-  pinMode(kitchenLightDots, OUTPUT);
-  digitalWrite(kitchenLightDots, OFF);
-
-  // balconyLight
-  pinMode(balconyLight, OUTPUT);
-  digitalWrite(balconyLight, OFF);
-
-  pinMode(livingRoomLight, OUTPUT);
-  digitalWrite(livingRoomLight, OFF);
-
-  // livingRoomBrace
-
-  pinMode(livingRoomBrace, OUTPUT);
-  digitalWrite(livingRoomBrace, OFF);
 
   pinMode(bedRoomLight, OUTPUT);
   digitalWrite(bedRoomLight, OFF);
@@ -157,16 +130,16 @@ void allOFF(bool withHall = false)
   light_wcBrace.off();
   fan_wc.off();
 
-  digitalWrite(kitchenLight, OFF);
-  digitalWrite(kitchenLight1, OFF);
-  digitalWrite(kitchenLight2, OFF);
-  digitalWrite(kitchenLightDots, OFF);
+  light_kitchen0.off();
+  light_kitchen1.off();
+  light_kitchen2.off();
+  light_kitchen_dots.off();
 
-  digitalWrite(balconyLight, OFF);
+  light_balcony.off();
 
-  digitalWrite(livingRoomLight, OFF);
-  digitalWrite(livingRoomBrace, OFF);
-
+  light_livingRoom.off();
+  light_livingRoomBrace.off();
+  
   digitalWrite(bedRoomLight, OFF);
   digitalWrite(bedRoomBrace0, OFF);
   digitalWrite(bedRoomBrace1, OFF);
@@ -208,6 +181,16 @@ void loop()
   light_wcBrace.update();
   fan_wc.update();
 
+  light_kitchen0.update();
+  light_kitchen1.update();
+  light_kitchen2.update();
+  light_kitchen_dots.update();
+
+  light_balcony.update();
+
+  light_livingRoom.update();
+  light_livingRoomBrace.update();
+
   hButton.read();
 //
 #pragma region OutDoor //TODO needs to be finalized
@@ -239,10 +222,10 @@ void loop()
 #pragma endregion
 
 #pragma region hall
-#pragma region hallSW0
+#pragma region PIN_HALL_SW0
   if (hButton.event_click_Dn(0) == 1)
   {
-    Serial.println("pinHallSW0");
+    Serial.println("PIN_HALL_SW0");
     light_hall.toggle();
   }
   if (hButton.event_click_Db(0) == 1)
@@ -256,7 +239,7 @@ void loop()
   }
 #pragma endregion
 
-#pragma region hallSW1
+#pragma region PIN_HALL_SW1
   if (hButton.event_click_Dn(1) == 1)
   {
     ballOFF = true;
@@ -346,48 +329,39 @@ void loop()
 #pragma endregion
 
 #pragma region kitchen
-#pragma region kitchenSW0_0
+#pragma region PIN_KITCHEN_SW0_0
   if (hButton.event_click_Dn(4) == 1)
   {
-    Serial.println("kitchenSW0_0");
-    bkitchenLight = digitalRead(kitchenLight);
-    digitalWrite(kitchenLight, !bkitchenLight);
-    digitalWrite(kitchenLightDots, !bkitchenLight); // TODO сейчас не работает основной, убрать когда заработает
+    Serial.println("PIN_KITCHEN_SW0_0");
+    light_kitchen0.toggle();
   }
   if (hButton.event_click_Db(4) == 1)
   {
-    bkitchenLight = digitalRead(kitchenLight);
-
-    digitalWrite(kitchenLight, !bkitchenLight);
-    digitalWrite(kitchenLightDots, !bkitchenLight);
-    digitalWrite(kitchenLight1, !bkitchenLight);
-    digitalWrite(kitchenLight2, !bkitchenLight);
+    
   }
   if (hButton.event_press_short(4) == 1)
   {
   }
   if (hButton.event_press_long(4) == 1)
   {
-    digitalWrite(kitchenLight, OFF);
-    digitalWrite(kitchenLightDots, OFF);
-    digitalWrite(kitchenLight1, OFF);
-    digitalWrite(kitchenLight2, OFF);
-    digitalWrite(balconyLight, OFF);
+    light_kitchen0.off();
+    light_kitchen1.off();
+    light_kitchen2.off();
+    light_kitchen_dots.off();
+    light_balcony.off();
+    light_hall.on();
   }
 #pragma endregion
 
-#pragma region kitchenSW0_1
+#pragma region PIN_KITCHEN_SW0_1
   if (hButton.event_click_Dn(5) == 1)
   {
-    Serial.println("kitchenSW0_1");
-
-    bkitchenLightDots = digitalRead(kitchenLightDots);
-    digitalWrite(kitchenLightDots, !bkitchenLightDots);
+    Serial.println("PIN_KITCHEN_SW0_1");
+    light_kitchen_dots.toggle();
   }
   if (hButton.event_click_Db(5) == 1)
   {
-    bbalconyLight = digitalRead(balconyLight);
-    digitalWrite(balconyLight, !balconyLight);
+    
   }
   if (hButton.event_press_short(5) == 1)
   {
@@ -397,13 +371,11 @@ void loop()
   }
 #pragma endregion
 
-#pragma region kitchenSW1_0
+#pragma region PIN_KITCHEN_SW1_0
   if (hButton.event_click_Dn(6) == 1)
   {
-    Serial.println("kitchenSW1_0");
-    bkitchenLight1 = digitalRead(kitchenLight1);
-    digitalWrite(kitchenLight1, !bkitchenLight1);
-    digitalWrite(kitchenLight2, !bkitchenLight1);
+    Serial.println("PIN_KITCHEN_SW1_0");
+    light_kitchen1.toggle();
   }
   if (hButton.event_click_Db(6) == 1)
   {
@@ -417,13 +389,11 @@ void loop()
 #pragma endregion
 #pragma endregion
 
-#pragma region balconySW0
+#pragma region PIN_BALCONY_SW0
   if (hButton.event_click_Dn(7) == 1)
   {
-    Serial.println("balconySW0");
-
-    bbalconyLight = digitalRead(balconyLight);
-    digitalWrite(balconyLight, !bbalconyLight);
+    Serial.println("PIN_BALCONY_SW0");
+    light_balcony.toggle();
   }
   if (hButton.event_click_Db(7) == 1)
   {
@@ -440,9 +410,8 @@ void loop()
 #pragma region livingRoomSW0
   if (hButton.event_click_Dn(8) == 1)
   {
-    Serial.println("livingRoomSW0");
-    blivingRoomLight = digitalRead(livingRoomLight);
-    digitalWrite(livingRoomLight, !blivingRoomLight);
+    Serial.println("PIN_LIVINGRROOM_SW0");
+    light_livingRoom.toggle();
   }
   if (hButton.event_click_Db(8) == 1)
   {
@@ -452,15 +421,17 @@ void loop()
   }
   if (hButton.event_press_long(8) == 1)
   {
+    light_livingRoom.off();
+    light_livingRoomBrace.off();
+    light_hall.on();
   }
 #pragma endregion
 
-#pragma region livingRoomSW1
+#pragma region PIN_LIVINGRROOM_SW1
   if (hButton.event_click_Dn(9) == 1)
   {
-    Serial.println("livingRoomSW1");
-    blivingRoomBrace = digitalRead(livingRoomBrace);
-    digitalWrite(livingRoomBrace, !blivingRoomBrace);
+    Serial.println("PIN_LIVINGRROOM_SW1");
+    light_livingRoomBrace.toggle();
   }
   if (hButton.event_click_Db(9) == 1)
   {
