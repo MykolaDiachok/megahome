@@ -32,8 +32,9 @@ PowerDevice light_livingRoomBrace(PIN_LIVINGROOM_BRACE);
 bool bbedRoomLight = false;
 bool bbedRoomBrace0 = false;
 bool bbedRoomBrace1 = false;
-bool bchildRoomLight = false;
-bool bchildRoomBrace = false;
+
+PowerDevice light_childRoom(PIN_CHILDROOM_LIGHT);
+PowerDevice light_childRoomBrace(PIN_CHILDROOM_BRACE);
 
 Button hButton;
 
@@ -42,7 +43,7 @@ unsigned long HallTimeOff = 0;
 void setup()
 {
   Serial.begin(9600);
-  // pinMode(inOutDoorSensor, INPUT);
+  // pinMode(PIN_OUTER_DOOR_SENSOR, INPUT);
   hButton.NO(); // N.O. Normal Open
   // hButton.NC(); // N.C. Normal Closed
   // hButton.pullUp();
@@ -84,13 +85,13 @@ void setup()
                  ,
                  bedRoomSW2_1 // 15
                  ,
-                 childRoomSW0_0 // 16
+                 PIN_CHILDROOM_SW0_0 // 16
                  //, childRoomSW0_1  //17
                  ,
-                 childRoomSW1_0 // 17
+                 PIN_CHILDROOM_SW1_0 // 17
                  // , childRoomSW1_1  //19
                  ,
-                 inOutDoorSensor // 18
+                 PIN_OUTER_DOOR_SENSOR // 18
   );                             // arduino pins connected to button
 
 
@@ -102,13 +103,6 @@ void setup()
 
   pinMode(bedRoomBrace1, OUTPUT);
   digitalWrite(bedRoomBrace1, OFF);
-
-  pinMode(childRoomLight, OUTPUT);
-  digitalWrite(childRoomLight, OFF);
-
-  pinMode(childRoomBrace, OUTPUT);
-  digitalWrite(childRoomBrace, OFF);
-  // put your setup code here, to run once:
 }
 
 bool OpenInOutDoorSensor = false;
@@ -144,10 +138,8 @@ void allOFF(bool withHall = false)
   digitalWrite(bedRoomBrace0, OFF);
   digitalWrite(bedRoomBrace1, OFF);
 
-  digitalWrite(childRoomLight, OFF);
-  digitalWrite(childRoomBrace, OFF);
-
-  Serial.println("");
+  light_childRoom.off();
+  light_childRoomBrace.off();  
 }
 
 void allLightsOFF()
@@ -191,12 +183,15 @@ void loop()
   light_livingRoom.update();
   light_livingRoomBrace.update();
 
+  light_childRoom.update();
+  light_childRoomBrace.update();
+
   hButton.read();
 //
 #pragma region OutDoor //TODO needs to be finalized
   if (hButton.event_click_Dn(18) == 1)
   {
-    Serial.println("OutDoor event_click_Dn");
+    Serial.println("PIN_OUTER_DOOR_SENSOR event_click_Dn");
     OpenInOutDoorSensor = false;
     if ((light_hall.isOn() == false) && (!ballOFF))
     {
@@ -558,83 +553,58 @@ void loop()
 #pragma endregion
 
 #pragma region childRoom
-#pragma region childRoomSW0_0
+#pragma region PIN_CHILDROOM_SW0_0
   if (hButton.event_click_Dn(16) == 1)
   {
-    Serial.println("childRoomSW0_0");
-    bchildRoomLight = digitalRead(childRoomLight);
-    digitalWrite(childRoomLight, !bchildRoomLight);
+    Serial.println("PIN_CHILDROOM_SW0_0");
+    light_childRoom.toggle();
   }
   if (hButton.event_click_Db(16) == 1)
   {
-    bchildRoomLight = !digitalRead(childRoomLight);
-    digitalWrite(childRoomLight, bchildRoomLight);
-    digitalWrite(childRoomBrace, bchildRoomLight);
-
-    digitalWrite(PIN_HALL_LIGHT, bchildRoomLight);
+    light_hall.toggle();
   }
   if (hButton.event_press_short(16) == 1)
   {
   }
   if (hButton.event_press_long(16) == 1)
   {
-    digitalWrite(childRoomLight, OFF);
-    digitalWrite(childRoomBrace, OFF);
+    light_childRoom.off();
+    light_childRoomBrace.off();
+    light_hall.on();
   }
 #pragma endregion
 
-  // #pragma region childRoomSW0_1
-  //   if (hButton.event_click_Dn(17) == 1)
-  //   {
-  //     Serial.println("childRoomSW0_1");
-  //     bchildRoomLight = digitalRead(childRoomLight);
-  //     digitalWrite(childRoomLight, !bchildRoomLight);
-  //     digitalWrite(childRoomBrace, !bchildRoomLight);
-  //     //bchildRoomLight = !bchildRoomLight;
-  //     //digitalWrite(childRoomLight, bchildRoomLight);
-  //   }
-  //   if (hButton.event_click_Db(17) == 1)
-  //   {
-  //   }
-  //   if (hButton.event_press_short(17) == 1)
-  //   {
-  //   }
-  //   if (hButton.event_press_long(17) == 1)
-  //   {
-  //  }
-  // #pragma endregion
-
-#pragma region childRoomSW1_0
+#pragma region PIN_CHILDROOM_SW1_0
   if (hButton.event_click_Dn(17) == 1)
   {
-    Serial.println("childRoomSW1_0_Dn");
-    bchildRoomBrace = digitalRead(childRoomBrace);
-    digitalWrite(childRoomBrace, !bchildRoomBrace);
+    Serial.println("PIN_CHILDROOM_SW1_0");
+    light_childRoomBrace.toggle();
   }
   if (hButton.event_click_Db(17) == 1)
   {
-    Serial.println("childRoomSW1_0_db");
-    bchildRoomBrace = digitalRead(childRoomBrace);
-    digitalWrite(childRoomBrace, !bchildRoomBrace);
-    digitalWrite(childRoomLight, !bchildRoomBrace);
+    Serial.println("PIN_CHILDROOM_SW1_0_db");
+    light_childRoomBrace.toggle();
+    if (light_childRoom.isOn()){
+      light_childRoom.scheduleOffSeconds(30);
+    }
   }
   if (hButton.event_press_short(17) == 1)
   {
   }
   if (hButton.event_press_long(17) == 1)
   {
-    digitalWrite(childRoomLight, OFF);
-    digitalWrite(childRoomBrace, OFF);
+    light_childRoom.off();
+    light_childRoomBrace.scheduleOffSeconds(30);
   }
 #pragma endregion
 // #pragma region childRoomSW1_1
 //   if (hButton.event_click_Dn(19) == 1)
 //   {
 //     Serial.println("childRoomSW1_1");
-//     bchildRoomLight = digitalRead(childRoomLight);
-//     digitalWrite(childRoomLight, !bchildRoomLight);
+//     bchildRoomLight = digitalRead(PIN_CHILDROOM_LIGHT);
+//     digitalWrite(PIN_CHILDROOM_LIGHT, !bchildRoomLight);
 //     //bchildRoomLight = !bchildRoomLight;
-//     //digitalWrite(childRoomLight, bchildRoomLight);
+//     //digitalWrite(PIN_CHILDROOM_LIGHT, bchildRoomLight);
 //   }
 //   if (hButton.event_click_Db(19) == 1)
 //   {
@@ -649,17 +619,17 @@ void loop()
 
 #pragma endregion
 
-  if (hButton.event_click_Dn() == 1) // - событие нажатия                          кнопки
+  if (hButton.event_click_Dn() == 1) 
   {
     // Serial.println("all event_click_Dn");
   }
-  if (hButton.event_click_Db() == 1) // - событие двойного щелчка                  кнопки
+  if (hButton.event_click_Db() == 1) 
   {
   }
-  if (hButton.event_press_short() == 1) // - событие короткого нажатия                кнопки
+  if (hButton.event_press_short() == 1) 
   {
   }
-  if (hButton.event_press_long() == 1) // - событие длинного  нажатия                кнопки
+  if (hButton.event_press_long() == 1) 
   {
   }
   if (hButton.event_click_Up() == 1)

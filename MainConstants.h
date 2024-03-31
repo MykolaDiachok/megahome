@@ -49,14 +49,13 @@
 #define bedRoomBrace1 36
 
 
-#define childRoomSW0_0 37
-//#define childRoomSW0_1 38
-#define childRoomSW1_0 38
-//#define childRoomSW1_1 40
-#define childRoomLight 41
-#define childRoomBrace 42
+#define PIN_CHILDROOM_SW0_0 37
+#define PIN_CHILDROOM_SW1_0 38
 
-#define inOutDoorSensor 12
+#define PIN_CHILDROOM_LIGHT 41
+#define PIN_CHILDROOM_BRACE 42
+
+#define PIN_OUTER_DOOR_SENSOR 12
 
 #define ON HIGH
 #define OFF LOW
