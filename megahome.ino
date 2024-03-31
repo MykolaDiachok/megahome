@@ -73,17 +73,17 @@ void setup()
                  ,
                  PIN_LIVINGRROOM_SW1 // 9
                  ,
-                 bedRoomSW0_0 // 10
+                 PIN_BEDROOM_SW0_0 // 10
                  ,
-                 bedRoomSW0_1 // 11
+                 PIN_BEDROOM_SW0_1 // 11
                  ,
-                 bedRoomSW1_0 // 12
+                 PIN_BEDROOM_SW1_0 // 12
                  ,
-                 bedRoomSW1_1 // 13
+                 PIN_BEDROOM_SW1_1 // 13
                  ,
-                 bedRoomSW2_0 // 14
+                 PIN_BEDROOM_SW2_0 // 14
                  ,
-                 bedRoomSW2_1 // 15
+                 PIN_BEDROOM_SW2_1 // 15
                  ,
                  PIN_CHILDROOM_SW0_0 // 16
                  //, childRoomSW0_1  //17
@@ -445,7 +445,7 @@ void loop()
 #pragma region bedRoomSW0_0
   if (hButton.event_click_Dn(10) == 1)
   {
-    Serial.println("bedRoomSW0_0");
+    Serial.println("PIN_BEDROOM_SW0_0");
     bbedRoomLight = digitalRead(bedRoomLight);
     digitalWrite(bedRoomLight, !bbedRoomLight);
     digitalWrite(bedRoomBrace0, !bbedRoomLight);
@@ -467,7 +467,7 @@ void loop()
 #pragma region bedRoomSW0_1
   if (hButton.event_click_Dn(11) == 1)
   {
-    Serial.println("bedRoomSW0_1");
+    Serial.println("PIN_BEDROOM_SW0_1");
     light_hall.toggle();
   }
   if (hButton.event_click_Db(11) == 1)
@@ -484,7 +484,7 @@ void loop()
 #pragma region bedRoomSW1_0
   if (hButton.event_click_Dn(12) == 1)
   {
-    Serial.println("bedRoomSW1_0");
+    Serial.println("PIN_BEDROOM_SW1_0");
     bbedRoomBrace0 = digitalRead(bedRoomBrace0);
     digitalWrite(bedRoomBrace0, !bbedRoomBrace0);
   }
@@ -501,7 +501,7 @@ void loop()
 #pragma region bedRoomSW1_1
   if (hButton.event_click_Dn(13) == 1)
   {
-    Serial.println("bedRoomSW1_1");
+    Serial.println("PIN_BEDROOM_SW1_1");
     bbedRoomBrace0 = digitalRead(bedRoomBrace0);
     digitalWrite(bedRoomBrace0, !bbedRoomBrace0);
   }
@@ -518,7 +518,7 @@ void loop()
 #pragma region bedRoomSW2_1
   if (hButton.event_click_Dn(14) == 1)
   {
-    Serial.println("bedRoomSW2_1");
+    Serial.println("PIN_BEDROOM_SW2_1");
     bbedRoomBrace1 = digitalRead(bedRoomBrace1);
     digitalWrite(bedRoomBrace1, !bbedRoomBrace1);
   }
@@ -595,6 +595,7 @@ void loop()
   {
     light_childRoom.off();
     light_childRoomBrace.scheduleOffSeconds(30);
+    light_hall.off();
   }
 #pragma endregion
 // #pragma region childRoomSW1_1

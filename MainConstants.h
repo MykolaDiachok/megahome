@@ -38,12 +38,12 @@
 #define PIN_LIVINGROOM_LIGHT 26
 #define PIN_LIVINGROOM_BRACE 27
 
-#define bedRoomSW0_0 29 //Mykola
-#define bedRoomSW0_1 28 //Mykola  
-#define bedRoomSW1_0 30
-#define bedRoomSW1_1 31
-#define bedRoomSW2_0 32
-#define bedRoomSW2_1 33
+#define PIN_BEDROOM_SW0_0 29 //Mykola
+#define PIN_BEDROOM_SW0_1 28 //Mykola  
+#define PIN_BEDROOM_SW1_0 30
+#define PIN_BEDROOM_SW1_1 31
+#define PIN_BEDROOM_SW2_0 32
+#define PIN_BEDROOM_SW2_1 33
 #define bedRoomLight 34
 #define bedRoomBrace0 35
 #define bedRoomBrace1 36
