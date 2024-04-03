@@ -29,9 +29,9 @@ PowerDevice light_balcony(PIN_BALCONY_LIGHT);
 PowerDevice light_livingRoom(PIN_LIVINGROOM_LIGHT);
 PowerDevice light_livingRoomBrace(PIN_LIVINGROOM_BRACE);
 
-bool bbedRoomLight = false;
-bool bbedRoomBrace0 = false;
-bool bbedRoomBrace1 = false;
+PowerDevice light_bedRoom(PIN_BEDROOM_LIGHT);
+PowerDevice light_bedRoomBrace0(PIN_BEDROOM_BRACE0);
+PowerDevice light_bedRoomBrace1(PIN_BEDROOM_BRACE1);
 
 PowerDevice light_childRoom(PIN_CHILDROOM_LIGHT);
 PowerDevice light_childRoomBrace(PIN_CHILDROOM_BRACE);
@@ -92,17 +92,7 @@ void setup()
                  // , childRoomSW1_1  //19
                  ,
                  PIN_OUTER_DOOR_SENSOR // 18
-  );                             // arduino pins connected to button
-
-
-  pinMode(bedRoomLight, OUTPUT);
-  digitalWrite(bedRoomLight, OFF);
-
-  pinMode(bedRoomBrace0, OUTPUT);
-  digitalWrite(bedRoomBrace0, OFF);
-
-  pinMode(bedRoomBrace1, OUTPUT);
-  digitalWrite(bedRoomBrace1, OFF);
+  );                                   // arduino pins connected to button
 }
 
 bool OpenInOutDoorSensor = false;
@@ -133,13 +123,13 @@ void allOFF(bool withHall = false)
 
   light_livingRoom.off();
   light_livingRoomBrace.off();
-  
-  digitalWrite(bedRoomLight, OFF);
-  digitalWrite(bedRoomBrace0, OFF);
-  digitalWrite(bedRoomBrace1, OFF);
+
+  light_bedRoom.off();
+  light_bedRoomBrace0.off();
+  light_bedRoomBrace1.off();
 
   light_childRoom.off();
-  light_childRoomBrace.off();  
+  light_childRoomBrace.off();
 }
 
 void allLightsOFF()
@@ -182,6 +172,10 @@ void loop()
 
   light_livingRoom.update();
   light_livingRoomBrace.update();
+
+  light_bedRoom.update();
+  light_bedRoomBrace0.update();
+  light_bedRoomBrace1.update();
 
   light_childRoom.update();
   light_childRoomBrace.update();
@@ -291,10 +285,10 @@ void loop()
 #pragma region WC
   if (hButton.event_click_Dn(3) == 1)
   {
-    Serial.println("PIN_BATHROOM_SW0");
+    Serial.println("PIN_WC_SW0");
     light_wc.toggle();
-    bool wcIsOn = light_bathroom.isOn();
-    light_bathroomBrace.setState(wcIsOn);
+    bool wcIsOn = light_wc.isOn();
+    light_wcBrace.setState(wcIsOn);
     if (wcIsOn)
     {
       fan_wc.on();
@@ -303,13 +297,12 @@ void loop()
     {
       fan_wc.scheduleOffMinutes(2);
     }
-    
   }
   if (hButton.event_click_Db(3) == 1)
   {
     light_wc.toggle();
-    bool wcIsOn = light_bathroom.isOn();
-    light_bathroomBrace.setState(wcIsOn);
+    bool wcIsOn = light_wc.isOn();
+    light_wcBrace.setState(wcIsOn);
     fan_wc.off();
   }
   if (hButton.event_press_short(3) == 1)
@@ -332,7 +325,6 @@ void loop()
   }
   if (hButton.event_click_Db(4) == 1)
   {
-    
   }
   if (hButton.event_press_short(4) == 1)
   {
@@ -356,7 +348,6 @@ void loop()
   }
   if (hButton.event_click_Db(5) == 1)
   {
-    
   }
   if (hButton.event_press_short(5) == 1)
   {
@@ -442,29 +433,27 @@ void loop()
 #pragma endregion
 
 #pragma region bedRoom
-#pragma region bedRoomSW0_0
+#pragma region PIN_BEDROOM_SW0_0
   if (hButton.event_click_Dn(10) == 1)
   {
     Serial.println("PIN_BEDROOM_SW0_0");
-    bbedRoomLight = digitalRead(bedRoomLight);
-    digitalWrite(bedRoomLight, !bbedRoomLight);
-    digitalWrite(bedRoomBrace0, !bbedRoomLight);
-    digitalWrite(bedRoomBrace1, !bbedRoomLight);
+    light_bedRoom.toggle();
   }
   if (hButton.event_click_Db(10) == 1)
   {
-    bbedRoomLight = digitalRead(bedRoomLight);
-    digitalWrite(bedRoomLight, !bbedRoomLight);
   }
   if (hButton.event_press_short(10) == 1)
   {
   }
   if (hButton.event_press_long(10) == 1)
   {
+    light_bedRoom.off();
+    light_bedRoomBrace0.off();
+    light_bedRoomBrace1.off();
   }
 #pragma endregion
 
-#pragma region bedRoomSW0_1
+#pragma region PIN_BEDROOM_SW0_1
   if (hButton.event_click_Dn(11) == 1)
   {
     Serial.println("PIN_BEDROOM_SW0_1");
@@ -478,15 +467,18 @@ void loop()
   }
   if (hButton.event_press_long(11) == 1)
   {
+    light_bedRoom.off();
+    light_bedRoomBrace0.off();
+    light_bedRoomBrace1.off();
+    light_hall.on();
   }
 #pragma endregion
 
-#pragma region bedRoomSW1_0
+#pragma region PIN_BEDROOM_SW1_0
   if (hButton.event_click_Dn(12) == 1)
   {
     Serial.println("PIN_BEDROOM_SW1_0");
-    bbedRoomBrace0 = digitalRead(bedRoomBrace0);
-    digitalWrite(bedRoomBrace0, !bbedRoomBrace0);
+    light_bedRoomBrace0.toggle();
   }
   if (hButton.event_click_Db(12) == 1)
   {
@@ -496,31 +488,38 @@ void loop()
   }
   if (hButton.event_press_long(12) == 1)
   {
+    light_bedRoomBrace0.off();
+    light_bedRoom.off();
+    light_hall.off();
   }
 #pragma endregion
-#pragma region bedRoomSW1_1
+#pragma region PIN_BEDROOM_SW1_1
   if (hButton.event_click_Dn(13) == 1)
   {
     Serial.println("PIN_BEDROOM_SW1_1");
-    bbedRoomBrace0 = digitalRead(bedRoomBrace0);
-    digitalWrite(bedRoomBrace0, !bbedRoomBrace0);
+    light_hall.toggle();
   }
   if (hButton.event_click_Db(13) == 1)
   {
+    light_bedRoom.toggle();
   }
   if (hButton.event_press_short(13) == 1)
   {
   }
   if (hButton.event_press_long(13) == 1)
   {
+    light_hall.scheduleOffSeconds(10);
+    light_bedRoom.scheduleOffSeconds(20);
+    light_bedRoomBrace0.scheduleOffSeconds(25);        
+    light_bedRoomBrace0.scheduleOffSeconds(30);
   }
 #pragma endregion
-#pragma region bedRoomSW2_1
+
+#pragma region PIN_BEDROOM_SW2_1
   if (hButton.event_click_Dn(14) == 1)
   {
     Serial.println("PIN_BEDROOM_SW2_1");
-    bbedRoomBrace1 = digitalRead(bedRoomBrace1);
-    digitalWrite(bedRoomBrace1, !bbedRoomBrace1);
+    light_bedRoomBrace1.toggle();
   }
   if (hButton.event_click_Db(14) == 1)
   {
@@ -530,23 +529,30 @@ void loop()
   }
   if (hButton.event_press_long(14) == 1)
   {
+    light_bedRoomBrace0.off();
+    light_bedRoom.off();
+    light_hall.off();
   }
 #pragma endregion
 #pragma region bedRoomSW2_2
   if (hButton.event_click_Dn(15) == 1)
   {
     Serial.println("bedRoomSW2_2");
-    bbedRoomBrace1 = digitalRead(bedRoomBrace1);
-    digitalWrite(bedRoomBrace1, !bbedRoomBrace1);
+    light_hall.toggle();
   }
   if (hButton.event_click_Db(15) == 1)
   {
+    light_bedRoom.toggle();
   }
   if (hButton.event_press_short(15) == 1)
   {
   }
   if (hButton.event_press_long(15) == 1)
   {
+    light_hall.scheduleOffSeconds(10);
+    light_bedRoom.scheduleOffSeconds(20);
+    light_bedRoomBrace0.scheduleOffSeconds(25);        
+    light_bedRoomBrace0.scheduleOffSeconds(30);
   }
 #pragma endregion
 
@@ -584,7 +590,8 @@ void loop()
   {
     Serial.println("PIN_CHILDROOM_SW1_0_db");
     light_childRoomBrace.toggle();
-    if (light_childRoom.isOn()){
+    if (light_childRoom.isOn())
+    {
       light_childRoom.scheduleOffSeconds(30);
     }
   }
@@ -598,39 +605,21 @@ void loop()
     light_hall.off();
   }
 #pragma endregion
-// #pragma region childRoomSW1_1
-//   if (hButton.event_click_Dn(19) == 1)
-//   {
-//     Serial.println("childRoomSW1_1");
-//     bchildRoomLight = digitalRead(PIN_CHILDROOM_LIGHT);
-//     digitalWrite(PIN_CHILDROOM_LIGHT, !bchildRoomLight);
-//     //bchildRoomLight = !bchildRoomLight;
-//     //digitalWrite(PIN_CHILDROOM_LIGHT, bchildRoomLight);
-//   }
-//   if (hButton.event_click_Db(19) == 1)
-//   {
-//   }
-//   if (hButton.event_press_short(19) == 1)
-//   {
-//   }
-//   if (hButton.event_press_long(19) == 1)
-//   {
-//   }
 #pragma endregion
 
 #pragma endregion
 
-  if (hButton.event_click_Dn() == 1) 
+  if (hButton.event_click_Dn() == 1)
   {
     // Serial.println("all event_click_Dn");
   }
-  if (hButton.event_click_Db() == 1) 
+  if (hButton.event_click_Db() == 1)
   {
   }
-  if (hButton.event_press_short() == 1) 
+  if (hButton.event_press_short() == 1)
   {
   }
-  if (hButton.event_press_long() == 1) 
+  if (hButton.event_press_long() == 1)
   {
   }
   if (hButton.event_click_Up() == 1)

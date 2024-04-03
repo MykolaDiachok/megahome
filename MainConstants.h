@@ -44,9 +44,10 @@
 #define PIN_BEDROOM_SW1_1 31
 #define PIN_BEDROOM_SW2_0 32
 #define PIN_BEDROOM_SW2_1 33
-#define bedRoomLight 34
-#define bedRoomBrace0 35
-#define bedRoomBrace1 36
+
+#define PIN_BEDROOM_LIGHT 34
+#define PIN_BEDROOM_BRACE0 35
+#define PIN_BEDROOM_BRACE1 36
 
 
 #define PIN_CHILDROOM_SW0_0 37
