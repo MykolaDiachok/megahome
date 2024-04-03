@@ -4,7 +4,8 @@
 class PowerDevice
 {
 private:
-    static PowerDevice *instance;
+    static PowerDevice* instance;
+    static Timer* sharedTimer;
     int pin;                // GPIO pin connected to the light
     bool state;             // Current state of the light (true for ON, false for OFF)
     Timer timer;            // Timer instance for scheduling the fan to turn off
@@ -16,6 +17,10 @@ public:
         pinMode(pin, OUTPUT); // Set the pin as an output
         off();                // Ensure the light starts in the OFF state
         instance = this;
+    }
+
+    static void setSharedTimer(Timer& timer) {
+        sharedTimer = &timer;
     }
 
     static void offStatic()
@@ -58,8 +63,10 @@ public:
 
     void scheduleOff(unsigned long duration)
     {
-        cancelScheduledOff();                          // Cancel any existing scheduled off event
-        offEventId = timer.after(duration, offStatic); // Schedule new off event
+         if (sharedTimer && offEventId == -1) { // Ensure sharedTimer is set
+            cancelScheduledOff();
+            offEventId = sharedTimer->after(duration, offStatic);
+        }
     }
 
     void scheduleOffSeconds(unsigned int seconds)
@@ -72,21 +79,17 @@ public:
         scheduleOff(minutes * MINUTE);
     }
 
-    void update()
-    {
-        timer.update(); // Update timer to check for any due events
-    }
+    
 
 private:
-    void cancelScheduledOff()
-    {
-        if (offEventId != -1)
-        {
-            timer.stop(offEventId); // Cancel any existing scheduled off event
+    void cancelScheduledOff() {
+        if (offEventId != -1 && sharedTimer) {
+            sharedTimer->stop(offEventId);
             offEventId = -1;
         }
     }
 };
 
 // Initialize the static instance pointer
-PowerDevice *PowerDevice::instance = nullptr;
+PowerDevice* PowerDevice::instance = nullptr;
+Timer* PowerDevice::sharedTimer = nullptr; 

@@ -43,6 +43,7 @@ unsigned long HallTimeOff = 0;
 void setup()
 {
   Serial.begin(9600);
+  PowerDevice::setSharedTimer(myTimer);
   // pinMode(PIN_OUTER_DOOR_SENSOR, INPUT);
   hButton.NO(); // N.O. Normal Open
   // hButton.NC(); // N.C. Normal Closed
@@ -106,6 +107,7 @@ void allOFF(bool withHall = false)
     Serial.println(" with hall");
     light_hall.off();
   }
+  
   light_bathroom.off();
   light_bathroomBrace.off();
   fan_bathroom.off();
@@ -153,33 +155,6 @@ void allLightsOFF()
 void loop()
 {
   myTimer.update();
-  light_hall.update();
-
-  light_bathroom.update();
-  light_bathroomBrace.update();
-  fan_bathroom.update();
-
-  light_wc.update();
-  light_wcBrace.update();
-  fan_wc.update();
-
-  light_kitchen0.update();
-  light_kitchen1.update();
-  light_kitchen2.update();
-  light_kitchen_dots.update();
-
-  light_balcony.update();
-
-  light_livingRoom.update();
-  light_livingRoomBrace.update();
-
-  light_bedRoom.update();
-  light_bedRoomBrace0.update();
-  light_bedRoomBrace1.update();
-
-  light_childRoom.update();
-  light_childRoomBrace.update();
-
   hButton.read();
 //
 #pragma region OutDoor //TODO needs to be finalized
