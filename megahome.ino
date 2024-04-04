@@ -43,7 +43,7 @@ unsigned long HallTimeOff = 0;
 void setup()
 {
   Serial.begin(9600);
-  PowerDevice::setSharedTimer(myTimer);
+  
   // pinMode(PIN_OUTER_DOOR_SENSOR, INPUT);
   hButton.NO(); // N.O. Normal Open
   // hButton.NC(); // N.C. Normal Closed
@@ -107,7 +107,7 @@ void allOFF(bool withHall = false)
     Serial.println(" with hall");
     light_hall.off();
   }
-  
+
   light_bathroom.off();
   light_bathroomBrace.off();
   fan_bathroom.off();
@@ -155,6 +155,34 @@ void allLightsOFF()
 void loop()
 {
   myTimer.update();
+
+  light_hall.checkOffSchedule();
+
+  light_bathroom.checkOffSchedule();
+  light_bathroomBrace.checkOffSchedule();
+  fan_bathroom.checkOffSchedule();
+
+  light_wc.checkOffSchedule();
+  light_wcBrace.checkOffSchedule();
+  fan_wc.checkOffSchedule();
+
+  light_kitchen0.checkOffSchedule();
+  light_kitchen1.checkOffSchedule();
+  light_kitchen2.checkOffSchedule();
+  light_kitchen_dots.checkOffSchedule();
+
+  light_balcony.checkOffSchedule();
+
+  light_livingRoom.checkOffSchedule();
+  light_livingRoomBrace.checkOffSchedule();
+
+  light_bedRoom.checkOffSchedule();
+  light_bedRoomBrace0.checkOffSchedule();
+  light_bedRoomBrace1.checkOffSchedule();
+
+  light_childRoom.checkOffSchedule();
+  light_childRoomBrace.checkOffSchedule();
+
   hButton.read();
 //
 #pragma region OutDoor //TODO needs to be finalized
@@ -485,7 +513,7 @@ void loop()
   {
     light_hall.scheduleOffSeconds(10);
     light_bedRoom.scheduleOffSeconds(20);
-    light_bedRoomBrace0.scheduleOffSeconds(25);        
+    light_bedRoomBrace0.scheduleOffSeconds(25);
     light_bedRoomBrace0.scheduleOffSeconds(30);
   }
 #pragma endregion
@@ -526,7 +554,7 @@ void loop()
   {
     light_hall.scheduleOffSeconds(10);
     light_bedRoom.scheduleOffSeconds(20);
-    light_bedRoomBrace0.scheduleOffSeconds(25);        
+    light_bedRoomBrace0.scheduleOffSeconds(25);
     light_bedRoomBrace0.scheduleOffSeconds(30);
   }
 #pragma endregion

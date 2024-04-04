@@ -1,41 +1,23 @@
-#include "Timer.h"
 #include "TimeConstants.h"
 
 class PowerDevice
 {
 private:
-    static PowerDevice* instance;
-    static Timer* sharedTimer;
-    int pin;                // GPIO pin connected to the light
-    bool state;             // Current state of the light (true for ON, false for OFF)
-    Timer timer;            // Timer instance for scheduling the fan to turn off
-    int8_t offEventId = -1; // Timer event ID for the scheduled turn-off event, -1 when not scheduled
+    int pin;    // GPIO pin connected to the light
+    bool state; // Current state of the light (true for ON, false for OFF)
+    unsigned long offTimestamp = 0;
 
 public:
     PowerDevice(int pin) : pin(pin), state(false)
     {
         pinMode(pin, OUTPUT); // Set the pin as an output
         off();                // Ensure the light starts in the OFF state
-        instance = this;
-    }
-
-    static void setSharedTimer(Timer& timer) {
-        sharedTimer = &timer;
-    }
-
-    static void offStatic()
-    { // Static method to call off
-        if (instance)
-        {
-            instance->off(); // Call the non-static off method
-        }
     }
 
     void on()
     {
         state = true;
         digitalWrite(pin, ON); // Turn the light on
-        cancelScheduledOff();
     }
 
     void off()
@@ -58,20 +40,11 @@ public:
     {
         state = newState;
         digitalWrite(pin, newState ? HIGH : LOW);
-        cancelScheduledOff();
     }
 
     void scheduleOff(unsigned long duration)
     {
-         if (sharedTimer && offEventId == -1) { // Ensure sharedTimer is set
-            cancelScheduledOff();
-            offEventId = sharedTimer->after(duration, offStatic);
-        }
-    }
-
-    void scheduleOffSeconds(unsigned int seconds)
-    {
-        scheduleOff(seconds * SECOND);
+        offTimestamp = millis() + duration;
     }
 
     void scheduleOffMinutes(unsigned int minutes)
@@ -79,17 +52,18 @@ public:
         scheduleOff(minutes * MINUTE);
     }
 
-    
+    void scheduleOffSeconds(unsigned int seconds)
+    {
+        scheduleOff(seconds * SECOND);
+    }
 
-private:
-    void cancelScheduledOff() {
-        if (offEventId != -1 && sharedTimer) {
-            sharedTimer->stop(offEventId);
-            offEventId = -1;
+    // Call this function regularly to check if it's time to turn off the device
+    void checkOffSchedule()
+    {
+        if (offTimestamp != 0 && millis() >= offTimestamp)
+        {
+            off();
+            offTimestamp = 0; // Reset schedule
         }
     }
 };
-
-// Initialize the static instance pointer
-PowerDevice* PowerDevice::instance = nullptr;
-Timer* PowerDevice::sharedTimer = nullptr; 
